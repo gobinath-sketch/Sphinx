@@ -1,8 +1,9 @@
-import { NextRequest } from 'next/server'
-import { updateSession } from '@/shared/supabase/middleware'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+  // Pass-through since Supabase has been removed
+  return NextResponse.next()
 }
 
 export const config = {
