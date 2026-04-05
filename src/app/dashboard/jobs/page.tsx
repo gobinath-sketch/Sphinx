@@ -331,57 +331,59 @@ export default function JobsPage() {
       {/* Main Content */}
       <main className="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Section */}
-        <Card className="bg-gray-900/50 border-gray-700 mb-8">
-          <CardHeader>
-            <CardTitle className="text-white">Find Your Dream Job</CardTitle>
-            <CardDescription className="text-gray-400">
-              Search for jobs using skills, keywords, or job titles
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Enter skills, job title, or keywords..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-black/50 border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/30"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  />
-                </div>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Location (optional)"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="pl-10 bg-black/50 border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/30"
-                  />
-                </div>
+        <Card className="bg-gray-900/50 border-gray-700 mb-6">
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
+              <div>
+                <CardTitle className="text-lg text-white font-semibold">Find Your Dream Job</CardTitle>
+                <CardDescription className="text-xs text-gray-400 mt-1">
+                  Search for jobs using skills, keywords, or job titles
+                </CardDescription>
               </div>
+            </div>
 
-              <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Enter skills, job title, or keywords..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-9 pl-9 text-sm bg-black/50 border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/30"
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                />
+              </div>
+              <div className="flex-[0.7] relative">
+                <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Location (optional)"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="h-9 pl-9 text-sm bg-black/50 border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+              <div className="flex space-x-2">
                 <Button
                   onClick={() => setShowFilters(!showFilters)}
                   variant="outline"
                   size="sm"
-                  className="text-gray-300 border-gray-600 hover:border-sky-400"
+                  className="h-9 px-3 text-xs text-gray-300 border-gray-600 hover:border-sky-400"
                 >
-                  <Filter className="h-4 w-4 mr-2" />
+                  <Filter className="h-4 w-4 mr-1.5" />
                   Filters
                 </Button>
                 <Button
+                  size="sm"
                   onClick={handleSearch}
                   disabled={isSearching}
-                  className="bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white"
+                  className="h-9 px-4 text-sm bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white whitespace-nowrap"
                 >
-                  {isSearching ? 'Searching...' : 'Search Jobs'}
+                  {isSearching ? '...' : 'Search Jobs'}
                 </Button>
               </div>
+            </div>
 
-              {showFilters && (
+            {showFilters && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-gray-800/30 rounded-lg border border-gray-700">
                   <div>
                     <label className="text-sm font-medium text-gray-300 mb-2 block">
@@ -500,7 +502,6 @@ export default function JobsPage() {
                   </div>
                 </div>
               )}
-            </div>
           </CardContent>
         </Card>
 
@@ -671,98 +672,90 @@ export default function JobsPage() {
               </div>
             </div>
 
-            <div className="grid gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {jobs.map((job, index) => {
                 const jobKey = `${job.source}_${job.title}_${job.company}`
                 const isSaved = savedJobs.has(jobKey)
 
                 return (
-                  <Card key={index} className="bg-gray-900/50 border-gray-700 hover:border-sky-400/50 transition-colors">
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <CardTitle className="text-white text-lg mb-2">
-                            {job.title}
-                          </CardTitle>
-                          <div className="flex items-center space-x-4 text-sm text-gray-400 mb-2">
-                            <div className="flex items-center">
-                              <Building className="h-4 w-4 mr-1" />
-                              {job.company}
-                            </div>
-                            <div className="flex items-center">
-                              <MapPin className="h-4 w-4 mr-1" />
-                              {job.location}
-                            </div>
-                            <div className="flex items-center">
-                              <span className="mr-1">{getRemoteTypeIcon(job.remote_type || 'onsite')}</span>
-                              <span className={getRemoteTypeColor(job.remote_type || 'onsite')}>
-                                {(job.remote_type || 'onsite').charAt(0).toUpperCase() + (job.remote_type || 'onsite').slice(1)}
-                              </span>
-                            </div>
-                            <div className="flex items-center">
-                              <Clock className="h-4 w-4 mr-1" />
-                              {formatDate(job.posted_date || new Date().toISOString())}
-                            </div>
-                          </div>
-                          {job.salary_range && (
-                            <div className="flex items-center text-green-400 font-medium">
-                              <DollarSign className="h-4 w-4 mr-1" />
-                              {formatCurrency(job.salary_range.min)} - {formatCurrency(job.salary_range.max)}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleSaveJob(job, job.source || 'unknown')}
-                            disabled={isSaved}
-                            className="text-gray-300 border-gray-600 hover:border-sky-400"
-                          >
-                            <Heart className={`h-4 w-4 mr-1 ${isSaved ? 'fill-red-500 text-red-500' : ''}`} />
-                            {isSaved ? 'Saved' : 'Save'}
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => window.open(job.apply_url || '#', '_blank')}
-                            className="text-gray-300 border-gray-600 hover:border-sky-400"
-                          >
-                            <ExternalLink className="h-4 w-4 mr-1" />
-                            Apply
-                          </Button>
-                        </div>
+                  <Card key={index} className="bg-gray-900/50 border-gray-700 hover:border-sky-400/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-900/20 flex flex-col h-full">
+                    <CardContent className="p-4 flex flex-col flex-1">
+                      <div className="flex justify-between items-start mb-2">
+                        <CardTitle className="text-sm font-semibold text-white line-clamp-2 leading-tight">
+                          {job.title}
+                        </CardTitle>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleSaveJob(job, job.source || 'unknown')}
+                          disabled={isSaved}
+                          className="h-6 w-6 text-gray-400 hover:text-sky-400 -mt-1 -mr-1 flex-shrink-0"
+                        >
+                          <Heart className={`h-4 w-4 ${isSaved ? 'fill-red-500 text-red-500' : ''}`} />
+                        </Button>
                       </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-gray-300 mb-4 line-clamp-3">
+
+                      <div className="space-y-1.5 mb-3 text-[10px] text-gray-400">
+                        <div className="flex items-center">
+                          <Building className="h-3 w-3 mr-1.5 flex-shrink-0" />
+                          <span className="truncate">{job.company}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <MapPin className="h-3 w-3 mr-1.5 flex-shrink-0" />
+                          <span className="truncate">{job.location}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <span className="mr-1">{getRemoteTypeIcon(job.remote_type || 'onsite')}</span>
+                            <span className={getRemoteTypeColor(job.remote_type || 'onsite')}>
+                              {(job.remote_type || 'onsite').charAt(0).toUpperCase() + (job.remote_type || 'onsite').slice(1)}
+                            </span>
+                          </div>
+                          <div className="flex items-center text-gray-500">
+                            <Clock className="h-3 w-3 mr-1 block" />
+                            {formatDate(job.posted_date || new Date().toISOString())}
+                          </div>
+                        </div>
+                        {job.salary_range && (
+                          <div className="flex items-center text-green-400 font-medium">
+                            <DollarSign className="h-3 w-3 mr-1 flex-shrink-0" />
+                            {formatCurrency(job.salary_range.min)} - {formatCurrency(job.salary_range.max)}
+                          </div>
+                        )}
+                      </div>
+
+                      <p className="text-gray-300 text-xs line-clamp-3 leading-snug mb-3">
                         {job.description}
                       </p>
 
                       {job.requirements && job.requirements.length > 0 && (
-                        <div className="mb-4">
-                          <h4 className="text-sm font-medium text-gray-300 mb-2">Requirements:</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {job.requirements.slice(0, 5).map((req, reqIndex) => (
-                              <span
-                                key={reqIndex}
-                                className="px-2 py-1 bg-sky-500/20 text-sky-200 text-xs rounded-full"
-                              >
-                                {req}
-                              </span>
-                            ))}
-                            {job.requirements.length > 5 && (
-                              <span className="px-2 py-1 bg-gray-600 text-gray-300 text-xs rounded-full">
-                                +{job.requirements.length - 5} more
-                              </span>
-                            )}
-                          </div>
+                        <div className="mb-4 flex flex-wrap gap-1 mt-auto">
+                          {job.requirements.slice(0, 3).map((req, reqIndex) => (
+                            <span
+                              key={reqIndex}
+                              className="px-1.5 py-0.5 bg-sky-500/20 text-sky-200 text-[10px] rounded"
+                            >
+                              {req}
+                            </span>
+                          ))}
+                          {job.requirements.length > 3 && (
+                            <span className="px-1.5 py-0.5 bg-gray-600 text-gray-300 text-[10px] rounded">
+                              +{job.requirements.length - 3}
+                            </span>
+                          )}
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>Source: {job.source}</span>
-                        <span>Posted: {formatDate(job.posted_date || new Date().toISOString())}</span>
+                      <div className="mt-auto pt-3 border-t border-gray-800">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(job.apply_url || '#', '_blank')}
+                          className="w-full h-8 text-xs text-gray-300 border-gray-600 hover:border-sky-400 hover:bg-sky-400/10 transition-colors"
+                        >
+                          <ExternalLink className="h-3 w-3 mr-1.5" />
+                          Apply Now
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>

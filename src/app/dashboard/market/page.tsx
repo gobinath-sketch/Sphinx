@@ -164,31 +164,34 @@ export default function StocksPage() {
       {/* Main Content */}
       <main className="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Section */}
-        <Card className="bg-gray-900/50 border-gray-700 mb-8">
-          <CardHeader>
-            <CardTitle className="text-white">Search Stocks</CardTitle>
-            <CardDescription className="text-gray-400">
-              Search for stocks to add to your watchlist
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex space-x-4">
+        <Card className="bg-gray-900/50 border-gray-700 mb-6">
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
+              <div>
+                <CardTitle className="text-lg text-white font-semibold">Search Stocks</CardTitle>
+                <CardDescription className="text-xs text-gray-400 mt-1">
+                  Search for stocks to add to your watchlist
+                </CardDescription>
+              </div>
+            </div>
+            <div className="flex space-x-3">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Enter stock symbol (e.g., AAPL, GOOGL, MSFT)"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value.toUpperCase())}
-                  className="pl-10 bg-black/50 border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/30"
+                  className="h-9 pl-9 text-sm bg-black/50 border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/30"
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                 />
               </div>
               <Button
+                size="sm"
                 onClick={handleSearch}
                 disabled={loadingStocks}
-                className="bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white"
+                className="h-9 px-4 text-sm bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white"
               >
-                {loadingStocks ? 'Searching...' : 'Search'}
+                {loadingStocks ? '...' : 'Search'}
               </Button>
             </div>
           </CardContent>
@@ -201,31 +204,26 @@ export default function StocksPage() {
               <CardTitle className="text-white">Search Results</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {searchResults.map((stock) => (
-                  <div key={stock.symbol} className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="text-lg font-semibold text-white">{stock.symbol}</h3>
-                        <span className="text-gray-400">{stock.name}</span>
-                      </div>
-                      <div className="flex items-center space-x-4 mt-2">
-                        <span className="text-xl font-bold text-white">{formatCurrency(stock.price)}</span>
-                        <div className={`flex items-center space-x-1 ${getChangeColor(stock.change)}`}>
-                          {getChangeIcon(stock.change)}
-                          <span>{stock.change > 0 ? '+' : ''}{stock.change.toFixed(2)}</span>
-                          <span>({stock.changePercent > 0 ? '+' : ''}{stock.changePercent.toFixed(2)}%)</span>
-                        </div>
-                      </div>
+                  <div key={stock.symbol} className="flex flex-col p-4 bg-gray-800/50 rounded-lg hover:border-sky-400/50 border border-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-900/20">
+                    <div className="flex items-center justify-between mb-2">
+                       <h3 className="text-lg font-bold text-white leading-none">{stock.symbol}</h3>
+                       <div className={`flex items-center text-xs font-medium space-x-1 ${getChangeColor(stock.change)}`}>
+                         {getChangeIcon(stock.change)}
+                         <span>{stock.change > 0 ? '+' : ''}{stock.changePercent.toFixed(2)}%</span>
+                       </div>
                     </div>
+                    <span className="text-[10px] text-gray-400 truncate mb-3">{stock.name}</span>
+                    <span className="text-xl font-bold text-white mb-4">{formatCurrency(stock.price)}</span>
                     <Button
                       onClick={() => handleAddToWatchlist(stock.symbol)}
                       variant="outline"
                       size="sm"
-                      className="text-gray-300 border-gray-600 hover:border-sky-400"
+                      className="w-full h-8 text-xs text-gray-300 border-gray-600 hover:border-sky-400 hover:bg-sky-400/10 transition-colors mt-auto"
                     >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Add to Watchlist
+                      <Plus className="h-3 w-3 mr-1.5" />
+                      Add
                     </Button>
                   </div>
                 ))}
@@ -236,61 +234,57 @@ export default function StocksPage() {
 
         {/* Watchlist */}
         <Card className="bg-gray-900/50 border-gray-700">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center">
-              <Star className="h-5 w-5 mr-2 text-yellow-400" />
-              Your Watchlist
-            </CardTitle>
-            <CardDescription className="text-gray-400">
-              Track your favorite stocks and their performance
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-5">
+            <div className="mb-4">
+              <CardTitle className="text-lg text-white font-semibold flex items-center">
+                <Star className="h-4 w-4 mr-2 text-yellow-400" />
+                Your Watchlist
+              </CardTitle>
+              <CardDescription className="text-xs text-gray-400 mt-1">
+                Track your favorite stocks and their performance
+              </CardDescription>
+            </div>
+            
             {loadingWatchlist ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400 mx-auto mb-4"></div>
-                <p className="text-gray-400">Loading watchlist...</p>
+                <p className="text-xs text-gray-400">Loading watchlist...</p>
               </div>
             ) : watchlist.length > 0 ? (
-              <div className="grid gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {watchlist.map((item) => {
                   const priceValue = typeof item.price === 'number' ? item.price : 0
                   const changeValue = typeof item.change === 'number' ? item.change : 0
-                  const changePercentValue =
-                    typeof item.changePercent === 'number' ? item.changePercent : 0
+                  const changePercentValue = typeof item.changePercent === 'number' ? item.changePercent : 0
 
                   return (
-                    <div key={item.symbol} className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3">
-                          <h3 className="text-lg font-semibold text-white">{item.symbol}</h3>
-                          <span className="text-gray-400">{item.name}</span>
-                        </div>
-                        <div className="flex items-center space-x-4 mt-2">
-                          <span className="text-xl font-bold text-white">{formatCurrency(priceValue)}</span>
-                          <div className={`flex items-center space-x-1 ${getChangeColor(changeValue)}`}>
-                            {getChangeIcon(changeValue)}
-                            <span>{changeValue > 0 ? '+' : ''}{changeValue.toFixed(2)}</span>
-                            <span>({changePercentValue > 0 ? '+' : ''}{changePercentValue.toFixed(2)}%)</span>
-                          </div>
-                        </div>
+                    <div key={item.symbol} className="flex flex-col p-4 bg-gray-800/50 rounded-lg hover:border-sky-400/50 border border-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-900/20 group">
+                      <div className="flex items-center justify-between mb-2">
+                         <h3 className="text-lg font-bold text-white leading-none group-hover:text-sky-300 transition-colors">{item.symbol}</h3>
+                         <div className={`flex items-center text-xs font-medium space-x-1 ${getChangeColor(changeValue)}`}>
+                           {getChangeIcon(changeValue)}
+                           <span>{changeValue > 0 ? '+' : ''}{changePercentValue.toFixed(2)}%</span>
+                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <span className="text-[10px] text-gray-400 truncate mb-3">{item.name}</span>
+                      <span className="text-xl font-bold text-white mb-4">{formatCurrency(priceValue)}</span>
+                      
+                      <div className="flex space-x-2 mt-auto">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="text-gray-300 border-gray-600 hover:border-sky-400"
+                          className="flex-1 h-8 text-xs text-gray-300 border-gray-600 hover:border-sky-400 hover:bg-sky-400/10 transition-colors"
                         >
-                          <BarChart3 className="h-4 w-4 mr-1" />
-                          View Chart
+                          <BarChart3 className="h-3 w-3 mr-1" />
+                          Chart
                         </Button>
                         <Button
                           onClick={() => handleRemoveFromWatchlist(item.symbol)}
                           variant="outline"
                           size="sm"
-                          className="text-red-400 border-red-600 hover:border-red-500"
+                          className="px-2 h-8 text-red-400 border-red-600/30 hover:border-red-500 hover:bg-red-500/10 transition-colors"
                         >
-                          Remove
+                          X
                         </Button>
                       </div>
                     </div>

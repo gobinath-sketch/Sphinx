@@ -41,7 +41,13 @@ export async function POST(request: NextRequest) {
       user_id: userId,
       job_id: jobId,
       job_snapshot: job,
-      source: source
+      source: source,
+      title: job.title || 'Unknown Title',
+      company: job.company || 'Unknown Company',
+      location: job.location || '',
+      description: job.description || '',
+      apply_url: job.apply_url || '',
+      salary: job.salary_range ? `${job.salary_range.min}-${job.salary_range.max}` : undefined
     });
 
     return NextResponse.json({ message: 'Job saved successfully', data: newJob });

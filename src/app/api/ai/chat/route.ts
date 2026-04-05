@@ -173,10 +173,17 @@ function normalizeActions(actionsRaw: Array<Record<string, unknown>>): GeminiAct
         typeof (action.data as Record<string, unknown>).path === 'string'
         ? (action.data as Record<string, unknown>).path
         : '/dashboard'
-    const path = String(value)
-      .replace(/^\/resume$/, '/dashboard/resume')
-      .replace(/^\/jobsearch$/, '/dashboard/jobs')
-      .replace(/^\/expenses$/, '/dashboard/expenses')
+    let path = String(value);
+    
+    // Normalize paths to ensure they match our actual file structure
+    if (path.includes('resume')) path = '/dashboard/resume';
+    else if (path.includes('job')) path = '/dashboard/jobs';
+    else if (path.includes('market') || path.includes('stock')) path = '/dashboard/market';
+    else if (path.includes('expense') || path.includes('finance')) path = '/dashboard/expenses';
+    else if (path.includes('profile')) path = '/dashboard/profile';
+    else if (path.includes('setting')) path = '/dashboard/settings';
+    else if (path.includes('account')) path = '/dashboard/account';
+    else if (!path.startsWith('/dashboard')) path = '/dashboard';
 
     return { type, label, data: { path } }
   })
@@ -205,13 +212,30 @@ function parseStructuredResponse(raw: string): AssistantOutput {
     const suggestions = Array.isArray(parsed.suggestions)
       ? parsed.suggestions.filter((item): item is string => typeof item === 'string').slice(0, 5)
       : []
+
+    let responseText = raw
+    if (typeof parsed.response === 'string' && parsed.response.trim().length > 0) {
+      responseText = parsed.response
+    } else {
+      let textOnly = raw.replace(candidate, '').trim()
+      if (textOnly.length === 0) {
+        textOnly = "Here are the suggested next steps:"
+      }
+      responseText = textOnly
+    }
+
     return {
-      response: typeof parsed.response === 'string' && parsed.response.trim().length > 0 ? parsed.response : raw,
+      response: responseText,
       suggestions,
       actions,
     }
   } catch {
-    return { response: raw, suggestions: [], actions: [] }
+    const cleanRaw = raw
+      .replace(/"suggestions"\s*:\s*\[[\s\S]*?\]/gi, '')
+      .replace(/"actions"\s*:\s*\[[\s\S]*?\]/gi, '')
+      .replace(/[{}"]/g, '')
+      .trim()
+    return { response: cleanRaw || raw, suggestions: [], actions: [] }
   }
 }
 
@@ -225,14 +249,14 @@ function createFallbackResponse(language: LanguageCode): AssistantOutput {
   }
 }
 
-async function callOpenRouterAPI(message: AssistantPromptPayload, context?: Record<string, unknown>): Promise<AssistantOutput> {
-  if (!OPENROUTER_API_KEY) {
-    throw new Error('Missing OPENROUTER_API_KEY')
+async function callHuggingFaceAPI(message: AssistantPromptPayload, context?: Record<string, unknown>): Promise<AssistantOutput> {
+  const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY
+  if (!HUGGINGFACE_API_KEY) {
+    throw new Error('Missing HUGGINGFACE_API_KEY')
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
   const payload = {
-    model: 'meta-llama/llama-3.1-70b-instruct',
+    model: 'meta-llama/Meta-Llama-3-8B-Instruct',
     messages: [
       {
         role: 'system',
@@ -247,26 +271,24 @@ async function callOpenRouterAPI(message: AssistantPromptPayload, context?: Reco
     max_tokens: 800,
   }
 
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const response = await fetch(`https://router.huggingface.co/v1/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-      'HTTP-Referer': siteUrl,
-      'X-Title': 'Sphinx AI Assistant',
+      Authorization: `Bearer ${HUGGINGFACE_API_KEY}`,
     },
     body: JSON.stringify(payload),
   })
 
   if (!response.ok) {
-    throw new Error(`OpenRouter API error: ${response.status}`)
+    throw new Error(`HuggingFace API error: ${response.status} - ${await response.text()}`)
   }
 
   const data = await response.json()
   const content = data?.choices?.[0]?.message?.content
 
   if (!content || typeof content !== 'string') {
-    throw new Error('No response from OpenRouter API')
+    throw new Error('No valid response from HuggingFace API')
   }
 
   return parseStructuredResponse(content)
@@ -276,9 +298,9 @@ async function generateAssistantReply(message: string, language: LanguageCode, c
   const payload = { text: message, language }
 
   try {
-    return await callOpenRouterAPI(payload, context)
-  } catch (openRouterError) {
-    console.error('OpenRouter API error:', openRouterError)
+    return await callHuggingFaceAPI(payload, context)
+  } catch (apiError) {
+    console.error('HuggingFace API error:', apiError)
     return createFallbackResponse(language)
   }
 }

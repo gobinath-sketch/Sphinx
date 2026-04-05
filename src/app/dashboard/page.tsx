@@ -315,54 +315,52 @@ export default function DashboardPage() {
                     <h2 className="text-3xl font-bold text-foreground">
                         Welcome back, {profile?.full_name?.split(' ')[0] || 'User'}!
                     </h2>
-                    <p className="text-muted-foreground text-lg max-w-2xl">
-                        Your AI-powered career and finance command center
-                    </p>
+
                 </div>
 
                 {/* Quick Stats Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 sm:gap-6">
                     <Card className="bg-secondary/60 border-border shadow-hand transition hover:-translate-y-1">
-                        <CardContent className="p-6 flex items-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-[16px] border-[3px] border-[#141414] bg-gradient-to-br from-[#FFE68C] via-[#FFD65C] to-[#FFC233] shadow-[4px_4px_0_#141414]">
-                                <Briefcase className="h-6 w-6 text-[#141414]" />
+                        <CardContent className="p-5 flex items-center">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#141414] bg-gradient-to-br from-[#FFE68C] via-[#FFD65C] to-[#FFC233] shadow-[3px_3px_0_#141414]">
+                                <Briefcase className="h-5 w-5 text-[#141414]" />
                             </div>
-                            <div className="ml-4">
-                                <p className="text-sm font-medium text-muted-foreground">Saved Jobs</p>
-                                <p className="text-2xl font-bold text-foreground">{summary.savedJobs}</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-secondary/60 border-border shadow-hand transition hover:-translate-y-1">
-                        <CardContent className="p-6 flex items-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-[16px] border-[3px] border-[#141414] bg-gradient-to-br from-[#7EE7EB] via-[#4EC9D1] to-[#2A9DB0] shadow-[4px_4px_0_#141414]">
-                                <FileText className="h-6 w-6 text-[#141414]" />
-                            </div>
-                            <div className="ml-4">
-                                <p className="text-sm font-medium text-muted-foreground">Resumes</p>
-                                <p className="text-2xl font-bold text-foreground">{summary.resumes}</p>
+                            <div className="ml-3.5 overflow-hidden">
+                                <p className="text-[11.5px] font-bold text-muted-foreground/80 truncate uppercase tracking-widest mb-0.5">Saved Jobs</p>
+                                <p className="text-xl font-bold text-foreground truncate leading-none">{summary.savedJobs}</p>
                             </div>
                         </CardContent>
                     </Card>
                     <Card className="bg-secondary/60 border-border shadow-hand transition hover:-translate-y-1">
-                        <CardContent className="p-6 flex items-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-[16px] border-[3px] border-[#141414] bg-gradient-to-br from-[#FFEAB0] via-[#FFD86F] to-[#FFB347] shadow-[4px_4px_0_#141414]">
-                                <TrendingUp className="h-6 w-6 text-[#141414]" />
+                        <CardContent className="p-5 flex items-center">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#141414] bg-gradient-to-br from-[#7EE7EB] via-[#4EC9D1] to-[#2A9DB0] shadow-[3px_3px_0_#141414]">
+                                <FileText className="h-5 w-5 text-[#141414]" />
                             </div>
-                            <div className="ml-4">
-                                <p className="text-sm font-medium text-muted-foreground">Watchlist</p>
-                                <p className="text-2xl font-bold text-foreground">{summary.watchlist}</p>
+                            <div className="ml-3.5 overflow-hidden">
+                                <p className="text-[11.5px] font-bold text-muted-foreground/80 truncate uppercase tracking-widest mb-0.5">Resumes</p>
+                                <p className="text-xl font-bold text-foreground truncate leading-none">{summary.resumes}</p>
                             </div>
                         </CardContent>
                     </Card>
                     <Card className="bg-secondary/60 border-border shadow-hand transition hover:-translate-y-1">
-                        <CardContent className="p-6 flex items-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-[16px] border-[3px] border-[#141414] bg-gradient-to-br from-[#FFE68C] via-[#ADF0A5] to-[#6EE7B7] shadow-[4px_4px_0_#141414]">
-                                <CreditCard className="h-6 w-6 text-[#141414]" />
+                        <CardContent className="p-5 flex items-center">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#141414] bg-gradient-to-br from-[#FFEAB0] via-[#FFD86F] to-[#FFB347] shadow-[3px_3px_0_#141414]">
+                                <TrendingUp className="h-5 w-5 text-[#141414]" />
                             </div>
-                            <div className="ml-4">
-                                <p className="text-sm font-medium text-muted-foreground">Net Flow</p>
-                                <p className={`text-2xl font-bold ${netColor}`}>{formatCurrency(summary.net)}</p>
+                            <div className="ml-3.5 overflow-hidden">
+                                <p className="text-[11.5px] font-bold text-muted-foreground/80 truncate uppercase tracking-widest mb-0.5">Watchlist</p>
+                                <p className="text-xl font-bold text-foreground truncate leading-none">{summary.watchlist}</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-secondary/60 border-border shadow-hand transition hover:-translate-y-1">
+                        <CardContent className="p-5 flex items-center">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[2px] border-[#141414] bg-gradient-to-br from-[#FFE68C] via-[#ADF0A5] to-[#6EE7B7] shadow-[3px_3px_0_#141414]">
+                                <CreditCard className="h-5 w-5 text-[#141414]" />
+                            </div>
+                            <div className="ml-3.5 overflow-hidden">
+                                <p className="text-[11.5px] font-bold text-muted-foreground/80 truncate uppercase tracking-widest mb-0.5">Net Flow</p>
+                                <p className={`text-xl font-bold truncate leading-none ${netColor}`}>{formatCurrency(summary.net)}</p>
                             </div>
                         </CardContent>
                     </Card>

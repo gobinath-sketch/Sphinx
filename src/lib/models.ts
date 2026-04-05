@@ -31,14 +31,18 @@ export const Resume = models.Resume || model('Resume', ResumeSchema);
 
 const JobSchema = new Schema({
     user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    title: { type: String, required: true },
-    company: { type: String, required: true },
+    job_id: { type: String, required: true, unique: true },
+    source: { type: String },
+    job_snapshot: { type: Schema.Types.Mixed },
+    title: { type: String },
+    company: { type: String },
     location: { type: String },
     description: { type: String },
     apply_url: { type: String },
     status: { type: String, default: 'saved' }, // saved, applied, interviewing, offered, rejected
     salary: { type: String },
     notes: { type: String },
+    saved_at: { type: Date, default: Date.now },
 }, { timestamps: true });
 
 export const Job = models.Job || model('Job', JobSchema);
