@@ -3,6 +3,7 @@ import { Inter, Nunito, Patrick_Hand } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/features/auth/context/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
+import Chatbot from "@/components/Chatbot";
 import WaterTouchEffects from "@/components/effects/WaterTouchEffects";
 
 const inter = Inter({
@@ -42,12 +43,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${nunito.variable} ${patrickHand.variable} font-sans antialiased`}
+        className={`${inter.variable} ${nunito.variable} font-sans antialiased bg-background text-foreground`}
       >
         <AuthProvider>
           {children}
+          <Chatbot />
           <Toaster />
-          <WaterTouchEffects />
         </AuthProvider>
       </body>
     </html>

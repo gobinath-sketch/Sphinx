@@ -1,24 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  /* Sketchbook Theme */
-  --background: #f6fde7;
-  --foreground: #161616;
-  --primary: #ffd54f;
-  --primary-foreground: #161616;
-  --secondary: #fffef5;
-  --secondary-foreground: #161616;
-  --muted: #f3f2ec;
-  --muted-foreground: #373737;
+  /* Modern Dark Theme */
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #a3ffce;
+  /* Matrix Green to match the rain */
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #262626;
+  --muted-foreground: #a1a1a1;
   --accent: #00b8a9;
-  --accent-foreground: #102121;
-  --destructive: #ff6b6b;
-  --destructive-foreground: #161616;
-  --border: #161616;
-  --input: #ffffff;
-  --ring: #161616;
-  --card: #fffdf0;
-  --card-foreground: var(--foreground);
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #333333;
+  --input: #1a1a1a;
+  --ring: #a3ffce;
+  --card: #141414;
+  --card-foreground: #ededed;
   --radius: 1.25rem;
 }
 
@@ -48,14 +49,11 @@
 }
 
 body {
-  background:
-    radial-gradient(60% 60% at 12% 8%, rgba(255, 213, 79, 0.32) 0%, transparent 65%),
-    radial-gradient(55% 55% at 90% 12%, rgba(0, 184, 169, 0.22) 0%, transparent 60%),
-    linear-gradient(135deg, #f8fee9 0%, #f0ffe0 100%);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-nunito), system-ui, sans-serif;
   min-height: 100vh;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 h1,
@@ -82,61 +80,57 @@ button {
   font-family: var(--font-patrick-hand), var(--font-nunito), system-ui, sans-serif;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Dark Mode */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(22, 22, 22, 0.55);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 12px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(22, 22, 22, 0.75);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 ::selection {
-  background: rgba(255, 213, 79, 0.45);
+  background: rgba(255, 213, 79, 0.3);
   color: var(--foreground);
 }
 
+/* Utility Overrides for Dark Mode Compatibility */
 .bg-black,
 .bg-gray-900 {
-  background-color: var(--secondary) !important;
+  background-color: var(--card) !important;
 }
 
 .bg-gray-900\/50,
 .bg-gray-900\/60,
 .bg-gray-900\/70 {
-  background-color: rgba(255, 255, 255, 0.82) !important;
+  background-color: rgba(20, 20, 20, 0.8) !important;
 }
 
-.text-white,
-.text-gray-300,
-.text-gray-200,
-.text-gray-100 {
-  color: var(--foreground) !important;
-}
-
+/* Text color overrides removed to allow tailwind utilities to work */
 .border-gray-700,
 .border-gray-600,
 .border-gray-500,
 .border-gray-700\/50,
 .border-gray-600\/50 {
-  border-color: rgba(22, 22, 22, 0.6) !important;
+  border-color: var(--border) !important;
 }
 
 .shadow-hand {
-  box-shadow: 6px 6px 0 rgba(22, 22, 22, 0.85);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  /* Subtler shadow for dark mode */
 }
 
 .shadow-hand:hover {
-  box-shadow: 10px 10px 0 rgba(22, 22, 22, 0.9);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.7);
 }
 
 .scrollbar-invisible {
@@ -147,30 +141,15 @@ button {
   display: none;
 }
 
-/* water ripple layer removed; sound-only effect */
-
-/* Auth pages dark theme overrides */
-.auth-theme-override {
-  --foreground: #ffffff !important;
-  color: #ffffff !important;
-}
-
-.auth-theme-override .text-foreground {
-  color: #ffffff !important;
-}
-
-.auth-theme-override .text-muted-foreground {
-  color: rgba(255, 255, 255, 0.7) !important;
-}
-
-.auth-theme-override .text-white {
-  color: #ffffff !important;
-}
-
-.auth-theme-override input {
-  color: #ffffff !important;
-}
-
-.auth-theme-override input::placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
+.glass-card {
+  width: 100%;
+  border-radius: 30px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0px 30px 50px -12px rgba(50, 50, 93, 0.25), inset 0px 18px 26px -18px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
 }
