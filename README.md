@@ -1,0 +1,1231 @@
+<![CDATA[<div align="center">
+
+# 🧠 Mastermind
+
+### *Your All-in-One AI-Powered Career & Finance Intelligence Platform*
+
+<br/>
+
+[![Next.js](https://img.shields.io/badge/Next.js-15.x-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
+[![Gemini AI](https://img.shields.io/badge/Gemini-2.0_Flash-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
+
+<br/>
+
+> **Mastermind** is a production-grade, full-stack web platform that unifies job search, AI-powered resume building, real-time stock market tracking, personalized news, expense management, and an intelligent AI chatbot — all in one beautiful, responsive interface.
+
+<br/>
+
+---
+
+</div>
+
+## 📋 Table of Contents
+
+- [✨ Overview](#-overview)
+- [🏗️ System Architecture](#️-system-architecture)
+- [📁 Project Structure](#-project-structure)
+- [🔄 Complete Application Flow](#-complete-application-flow)
+- [🔐 Authentication Flow](#-authentication-flow)
+- [📊 Dashboard Overview](#-dashboard-overview)
+- [💼 Module 1 — Job Search](#-module-1--job-search)
+- [📄 Module 2 — Resume Builder](#-module-2--resume-builder)
+- [📈 Module 3 — Market Dashboard](#-module-3--market-dashboard)
+- [📰 Module 4 — News Feed](#-module-4--news-feed)
+- [💰 Module 5 — Expense Tracker](#-module-5--expense-tracker)
+- [🤖 Module 6 — AI Assistant](#-module-6--ai-assistant)
+- [🗄️ Database Architecture](#️-database-architecture)
+- [🔌 API Reference](#-api-reference)
+- [🧩 Component Architecture](#-component-architecture)
+- [🔑 Environment Variables](#-environment-variables)
+- [🚀 Getting Started](#-getting-started)
+- [🛠️ Tech Stack](#️-tech-stack)
+
+---
+
+## ✨ Overview
+
+**Mastermind** solves the fragmented problem of career management and financial tracking by bringing everything together in one intelligent platform. Whether you're hunting for your next role, building a standout resume, watching your investments, or keeping tabs on your spending — Mastermind has you covered.
+
+### 🎯 Core Capabilities at a Glance
+
+| Module | What it does |
+|--------|-------------|
+| 🔐 **Auth System** | Secure login / signup / reset via Supabase Auth + MongoDB user profiles |
+| 💼 **Job Search** | Live job listings via Adzuna + JSearch APIs with skill-matched recommendations |
+| 📄 **Resume Builder** | AI-generated, ATS-friendly resumes with PDF export powered by Gemini 2.0 Flash |
+| 📈 **Market Dashboard** | Real-time stock quotes, charts, watchlist & portfolio tracking via Finnhub + Alpha Vantage |
+| 📰 **News Feed** | Personalized tech/career news via NewsAPI with sentiment-tagged articles |
+| 💰 **Expense Tracker** | Full income/expense management with category filters and financial snapshots |
+| 🤖 **AI Chatbot** | Persistent Gemini-powered assistant with conversation history |
+| 🎯 **Daily Goals** | Localhost-persisted goal tracker for daily productivity |
+
+---
+
+## 🏗️ System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          MASTERMIND PLATFORM                                │
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐  │
+│   │                     CLIENT LAYER (Browser)                          │  │
+│   │                                                                     │  │
+│   │   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │  │
+│   │   │  /login  │  │ /signup  │  │/dashboard│  │  /dashboard/*    │  │  │
+│   │   │  Page    │  │  Page    │  │  (Home)  │  │  (6 Modules)     │  │  │
+│   │   └────┬─────┘  └────┬─────┘  └────┬─────┘  └────────┬─────────┘  │  │
+│   │        │             │             │                  │             │  │
+│   │        └─────────────┴─────────────┴──────────────────┘             │  │
+│   │                              │                                       │  │
+│   │                    ┌─────────▼─────────┐                            │  │
+│   │                    │   React 19 + Next  │                            │  │
+│   │                    │  App Router (RSC)  │                            │  │
+│   │                    │  TailwindCSS v4    │                            │  │
+│   │                    │  Framer Motion     │                            │  │
+│   │                    └─────────┬─────────┘                            │  │
+│   └──────────────────────────────┼──────────────────────────────────────┘  │
+│                                  │                                          │
+│   ┌──────────────────────────────▼──────────────────────────────────────┐  │
+│   │                    NEXT.JS API ROUTES (/api/*)                      │  │
+│   │                                                                     │  │
+│   │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────┐  │  │
+│   │  │/api/auth │ │/api/jobs │ │/api/stocks│ │/api/news │ │/api/ai  │  │  │
+│   │  └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬────┘  │  │
+│   │       │            │            │             │             │        │  │
+│   └───────┼────────────┼────────────┼─────────────┼─────────────┼───────┘  │
+│           │            │            │             │             │           │
+│   ┌───────▼────┐  ┌────▼─────┐  ┌──▼──────┐  ┌──▼──────┐  ┌──▼──────┐   │
+│   │  Supabase  │  │ Adzuna / │  │ Finnhub │  │ NewsAPI │  │ Gemini  │   │
+│   │   Auth     │  │ JSearch  │  │ Alpha   │  │         │  │ 2.0     │   │
+│   │ + MongoDB  │  │  APIs    │  │ Vantage │  │         │  │ Flash   │   │
+│   └────────────┘  └──────────┘  └─────────┘  └─────────┘  └─────────┘   │
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐  │
+│   │                      DATA LAYER                                     │  │
+│   │                                                                     │  │
+│   │  ┌──────────────────────┐     ┌──────────────────────────────────┐ │  │
+│   │  │     MongoDB Atlas    │     │        Supabase (PostgreSQL)     │ │  │
+│   │  │  db: mastermind      │     │                                  │ │  │
+│   │  │  ├─ users            │     │  ├─ profiles                     │ │  │
+│   │  │  ├─ resumes          │     │  ├─ resumes                      │ │  │
+│   │  │  ├─ jobs             │     │  ├─ jobs_saved                   │ │  │
+│   │  │  ├─ watchlists       │     │  ├─ watchlists                   │ │  │
+│   │  │  ├─ transactions     │     │  ├─ transactions                 │ │  │
+│   │  │  └─ conversations    │     │  └─ conversations                │ │  │
+│   │  └──────────────────────┘     └──────────────────────────────────┘ │  │
+│   └─────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📁 Project Structure
+
+```
+mastermind-app/
+│
+├── 📄 package.json                    # Dependencies & scripts
+├── 📄 next.config.ts                  # Next.js configuration
+├── 📄 tsconfig.json                   # TypeScript config
+├── 📄 postcss.config.mjs              # PostCSS / Tailwind config
+├── 📄 supabase-schema.sql             # Full Supabase DB schema
+├── 📄 .env.local                      # Environment variables (not committed)
+├── 📄 .env.local.example              # Environment variable template
+│
+├── 📁 public/                         # Static assets
+│
+└── 📁 src/
+    │
+    ├── 📄 middleware.ts               # Next.js route middleware
+    │
+    ├── 📁 app/                        # Next.js App Router (Pages)
+    │   ├── 📄 layout.tsx              # Root layout (fonts, providers, chatbot)
+    │   ├── 📄 page.tsx                # Root page → redirects to /login or /dashboard
+    │   ├── 📄 globals.css             # Global styles + CSS variables
+    │   │
+    │   ├── 📁 login/                  # /login — Login page
+    │   ├── 📁 signup/                 # /signup — Registration page
+    │   ├── 📁 forgot-password/        # /forgot-password — Password reset request
+    │   ├── 📁 reset-password/         # /reset-password — Password reset form
+    │   │
+    │   ├── 📁 dashboard/              # Protected /dashboard routes
+    │   │   ├── 📄 page.tsx            # Main dashboard home
+    │   │   ├── 📁 jobs/               # /dashboard/jobs — Job search & saved jobs
+    │   │   ├── 📁 resume/             # /dashboard/resume — AI resume builder
+    │   │   ├── 📁 market/             # /dashboard/market — Stock market
+    │   │   ├── 📁 news/               # /dashboard/news — News feed
+    │   │   ├── 📁 expenses/           # /dashboard/expenses — Expense tracker
+    │   │   ├── 📁 ai-chat/            # /dashboard/ai-chat — AI chatbot
+    │   │   ├── 📁 profile/            # /dashboard/profile — User profile
+    │   │   ├── 📁 settings/           # /dashboard/settings — App settings
+    │   │   └── 📁 account/            # /dashboard/account — Account management
+    │   │
+    │   └── 📁 api/                    # Next.js API Routes (Backend)
+    │       ├── 📁 auth/               # Auth endpoints
+    │       │   ├── login/             # POST /api/auth/login
+    │       │   ├── register/          # POST /api/auth/register
+    │       │   ├── logout/            # POST /api/auth/logout
+    │       │   └── me/                # GET  /api/auth/me
+    │       ├── 📁 jobs/               # Jobs endpoints
+    │       │   ├── search/            # POST /api/jobs/search
+    │       │   ├── recommendations/   # GET  /api/jobs/recommendations
+    │       │   └── save/              # POST /api/jobs/save
+    │       ├── 📁 stocks/             # Stock market endpoints
+    │       │   ├── quote/[symbol]/    # GET  /api/stocks/quote/:symbol
+    │       │   ├── quotes/            # POST /api/stocks/quotes (batch)
+    │       │   ├── chart/[symbol]/    # GET  /api/stocks/chart/:symbol
+    │       │   ├── search/            # GET  /api/stocks/search
+    │       │   ├── watchlist/         # GET/POST/DELETE /api/stocks/watchlist
+    │       │   ├── movers/[type]/     # GET  /api/stocks/movers/:type
+    │       │   └── news/[symbol]/     # GET  /api/stocks/news/:symbol
+    │       ├── 📁 news/               # News endpoints
+    │       ├── 📁 ai/                 # AI endpoints
+    │       │   ├── chat/              # POST /api/ai/chat
+    │       │   ├── resume/generate/   # POST /api/ai/resume/generate
+    │       │   ├── resume/improve/    # POST /api/ai/resume/improve
+    │       │   ├── resume/analyze-match/
+    │       │   ├── resume/optimize-ats/
+    │       │   └── cover-letter/generate/
+    │       ├── 📁 resumes/            # Resume CRUD endpoints
+    │       ├── 📁 user/               # User data endpoints
+    │       │   ├── stats/             # GET /api/user/stats
+    │       │   └── transactions/      # GET/POST /api/user/transactions
+    │       ├── 📁 trends/             # Google Trends proxy
+    │       └── 📁 debug/              # Debug/test endpoints
+    │
+    ├── 📁 components/                 # Shared UI Components
+    │   ├── 📄 Chatbot.tsx             # Global floating AI chatbot
+    │   ├── 📄 ActionCard.tsx          # Reusable action card
+    │   ├── 📄 BackToDashboardButton.tsx
+    │   ├── 📄 MatrixBackground.tsx    # Animated matrix background
+    │   ├── 📁 ui/                     # Radix UI primitives
+    │   │   ├── button.tsx
+    │   │   ├── card.tsx
+    │   │   ├── input.tsx
+    │   │   ├── dialog.tsx
+    │   │   ├── dropdown-menu.tsx
+    │   │   ├── tabs.tsx
+    │   │   ├── toast.tsx
+    │   │   └── tooltip.tsx
+    │   └── 📁 effects/
+    │       └── WaterTouchEffects.tsx  # Interactive water ripple effect
+    │
+    ├── 📁 features/                   # Feature-based modules
+    │   └── 📁 auth/
+    │       └── 📁 context/
+    │           └── AuthContext.tsx    # Global auth context & hooks
+    │
+    ├── 📁 lib/                        # Core library / business logic
+    │   ├── 📄 db.ts                   # MongoDB connection (cached)
+    │   ├── 📄 auth.ts                 # Auth helper utilities
+    │   ├── 📄 models.ts               # Mongoose data models
+    │   ├── 📁 services/               # Service layer (API wrappers)
+    │   │   ├── ai-service.ts          # AI (Gemini) service
+    │   │   ├── job-service.ts         # Jobs (Adzuna/JSearch) service
+    │   │   ├── news-service.ts        # News (NewsAPI) service
+    │   │   └── stock-service.ts       # Stocks (Finnhub/Alpha Vantage) service
+    │   └── 📁 database/               # Database type definitions
+    │
+    └── 📁 shared/                     # Cross-cutting utilities
+        ├── 📁 database/
+        │   └── types.ts               # Shared TypeScript types
+        ├── 📁 hooks/
+        │   └── use-toast.ts           # Toast notification hook
+        └── 📁 utils/
+            └── index.ts               # Formatting utilities
+```
+
+---
+
+## 🔄 Complete Application Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    END-TO-END USER JOURNEY                          │
+└─────────────────────────────────────────────────────────────────────┘
+
+  User visits mastermind.app
+          │
+          ▼
+  ┌───────────────────┐
+  │   Root Page (/)   │  ──── Checks auth state via useAuth()
+  └────────┬──────────┘
+           │
+     ┌─────┴──────┐
+     │            │
+     ▼            ▼
+  ┌──────┐   ┌──────────┐
+  │Not   │   │Logged In │
+  │Logged│   └────┬─────┘
+  │  In  │        │
+  └──┬───┘        ▼
+     │       ┌──────────────┐
+     ▼       │  /dashboard  │
+  ┌──────┐   └──────────────┘
+  │/login│
+  └──┬───┘
+     │
+     ▼
+  ┌─────────────────────────────────────────────────┐
+  │              Authentication Gate                │
+  │                                                 │
+  │  ┌──────────────┐      ┌────────────────────┐  │
+  │  │   /login     │      │     /signup         │  │
+  │  │              │      │                     │  │
+  │  │ Email + Pass ├──┐   │ Name + Email + Pass │  │
+  │  │ ──────────── │  │   │ ─────────────────── │  │
+  │  │ POST /api/   │  │   │ POST /api/          │  │
+  │  │ auth/login   │  │   │ auth/register       │  │
+  │  └──────────────┘  │   └─────────┬───────────┘  │
+  │                    │             │               │
+  │                    └──────┬──────┘               │
+  │                           │                      │
+  │              ┌────────────▼─────────────┐        │
+  │              │  Supabase Auth Session   │        │
+  │              │  + MongoDB Profile Create│        │
+  │              └────────────┬─────────────┘        │
+  └───────────────────────────┼─────────────────────-┘
+                              │
+                              ▼
+  ┌───────────────────────────────────────────────────────────────┐
+  │                    /dashboard (Protected)                     │
+  │                                                               │
+  │   Header: Mastermind | Profile | Settings | Sign Out         │
+  │   ┌───────────────────────────────────────────────────────┐  │
+  │   │ Quick Stats: Saved Jobs | Resumes | Watchlist | Net $ │  │
+  │   └───────────────────────────────────────────────────────┘  │
+  │   ┌───────────────────────────────────────────────────────┐  │
+  │   │ Highlights: Recommended Jobs | Headlines | Market     │  │
+  │   └───────────────────────────────────────────────────────┘  │
+  │   ┌───────────────────────────────────────────────────────┐  │
+  │   │ Feature Cards: Jobs | Resume | Stocks | News |        │  │
+  │   │                Expenses | AI Assistant                │  │
+  │   └───────────────────────────────────────────────────────┘  │
+  │   ┌───────────────────────────────────────────────────────┐  │
+  │   │ Daily Focus (Goals) | Financial Snapshot              │  │
+  │   └───────────────────────────────────────────────────────┘  │
+  └───────────────────────────────────────────────────────────────┘
+                              │
+           ┌──────────────────┼───────────────────┐
+           │          │       │       │            │
+           ▼          ▼       ▼       ▼            ▼
+        /jobs    /resume /market  /news     /expenses
+      /ai-chat  /profile /settings           /account
+```
+
+---
+
+## 🔐 Authentication Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         AUTHENTICATION SYSTEM                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────┐    ┌─────────────────────┐    ┌──────────────────────────┐
+  │    Client   │    │   Next.js API Route  │    │   External Services      │
+  └──────┬──────┘    └──────────┬──────────┘    └───────────┬──────────────┘
+         │                      │                            │
+         │  POST /api/auth/     │                            │
+         │  register            │                            │
+         │ ────────────────────►│                            │
+         │  {name, email, pass} │  bcryptjs hash password    │
+         │                      │ ──────────────────────────►│ MongoDB
+         │                      │  create User document      │ Atlas
+         │                      │ ◄──────────────────────────│
+         │                      │                            │
+         │                      │  createClient()            │
+         │                      │ ──────────────────────────►│ Supabase
+         │                      │  signUp(email, password)   │ Auth
+         │                      │ ◄──────────────────────────│
+         │                      │  session + user.id         │
+         │  { token, user }     │                            │
+         │ ◄────────────────────│                            │
+         │                      │                            │
+         │  POST /api/auth/     │                            │
+         │  login               │                            │
+         │ ────────────────────►│                            │
+         │                      │  Find user in MongoDB      │
+         │                      │  bcrypt.compare()          │
+         │                      │  signIn via Supabase       │
+         │                      │ ◄──────────────────────────│
+         │  JWT Cookie Set      │                            │
+         │ ◄────────────────────│                            │
+         │                      │                            │
+         │  GET /dashboard      │  middleware.ts             │
+         │ ────────────────────►│  (pass-through, auth       │
+         │                      │  checked client-side       │
+         │                      │  via AuthContext)          │
+         │                      │                            │
+
+┌──────────────────────────────────────────────────────────────────────┐
+│                        PASSWORD RESET FLOW                           │
+│                                                                      │
+│  User → /forgot-password → Enter Email                               │
+│    → POST /api/auth/forgot-password                                  │
+│    → Generate reset_token + reset_token_expires (1hr)               │
+│    → Save to MongoDB User document                                   │
+│    → Send email with reset link                                      │
+│    → User clicks link → /reset-password?token=xxx                   │
+│    → POST /api/auth/reset-password                                   │
+│    → Validate token + expiry → bcrypt new password                  │
+│    → Clear reset fields → Redirect to /login                        │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│                     AUTH CONTEXT (Global State)                      │
+│                                                                      │
+│  AuthContext provides:                                               │
+│  ├─ user         → Current user object                               │
+│  ├─ profile      → MongoDB profile (name, avatar, skills, prefs)    │
+│  ├─ loading      → Boolean auth loading state                        │
+│  └─ signOut()    → Clears session + redirects to /login             │
+│                                                                      │
+│  Every protected page checks: if (!loading && !user) → /login       │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📊 Dashboard Overview
+
+The main dashboard (`/dashboard/page.tsx`) is the command center. It **parallel-loads** all data on mount using `Promise.all()`:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    DASHBOARD DATA LOADING FLOW                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Component Mount (user authenticated)
+          │
+          ▼
+  Promise.all() — parallel fetch:
+  ┌──────────────────────────────────────────────────────────────^────────────┐
+  │                                                                           │
+  │  [1] jobService.getSavedJobs(userId)   → /api/jobs/saved/:id             │
+  │  [2] fetch('/api/user/stats')          → resume count                    │
+  │  [3] stockService.getWatchlist()       → /api/stocks/watchlist           │
+  │  [4] fetch('/api/user/transactions')   → income/expense data             │
+  │  [5] fetch('/api/jobs/recommendations')→ AI-matched job list             │
+  │  [6] newsService.getTopHeadlines()     → tech news from NewsAPI          │
+  │                                                                           │
+  └───────────────────────────────────────────────────────────────────────────┘
+          │
+          ▼
+  State Updates:
+  ├─ summary     → { savedJobs, resumes, watchlist, income, expenses, net }
+  ├─ watchlist   → stock quotes (fallback: AAPL,MSFT,GOOGL,AMZN,TSLA)
+  ├─ recommended → AI-matched job items
+  └─ headlines   → top 10 tech news articles
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │                      DASHBOARD SECTIONS                             │
+  │                                                                     │
+  │  ┌──────────┬──────────┬──────────┬──────────┐                     │
+  │  │ 💼 Saved │ 📄Resumes│ 📈Watchl │ 💵Net$   │  ← Quick Stats     │
+  │  │   Jobs   │  Count   │  ist Cnt │  Flow    │                     │
+  │  └──────────┴──────────┴──────────┴──────────┘                     │
+  │                                                                     │
+  │  ┌──────────────┬──────────────┬──────────────┐                    │
+  │  │ Recommended  │  Trending    │  Market      │                    │
+  │  │    Jobs      │  Headlines   │   Watch      │  ← Highlights      │
+  │  │  (scrollable)│  (scrollable)│  (scrollable)│                    │
+  │  └──────────────┴──────────────┴──────────────┘                    │
+  │                                                                     │
+  │  ┌───────┬────────┬────────┬─────────┬────────┬────────┐           │
+  │  │  Job  │Resume  │ Stock  │  News   │Expense │  AI    │           │
+  │  │Search │Builder │ Dash   │  Feed   │Tracker │  Chat  │  ← Cards  │
+  │  └───────┴────────┴────────┴─────────┴────────┴────────┘           │
+  │                                                                     │
+  │  ┌──────────────────────┬──────────────────────┐                   │
+  │  │   Daily Focus        │  Financial Snapshot  │  ← Productivity   │
+  │  │ (Goals — localStorage│  (Income/Expenses/   │                   │
+  │  │  persisted)          │   Net Flow)          │                   │
+  │  └──────────────────────┴──────────────────────┘                   │
+  └──────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 💼 Module 1 — Job Search
+
+**Route:** `/dashboard/jobs`
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          JOB SEARCH FLOW                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  User enters search query + filters
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  Filters: query | location | remote | salary_min/max               │
+  │           job_type | experience_level | skills[]                   │
+  └───────────────────────────────┬─────────────────────────────────────┘
+                                  │
+                                  ▼
+                   POST /api/jobs/search
+                          │
+              ┌───────────┴────────────┐
+              │                        │
+              ▼                        ▼
+       Adzuna Jobs API           JSearch API (RapidAPI)
+       (app_id + api_key)        (via RapidAPI key)
+       Real job listings         Real-time job data
+              │                        │
+              └───────────┬────────────┘
+                          │
+                          ▼
+              Normalized JobSnapshot[]
+              ├─ id, title, company
+              ├─ location, salary_range
+              ├─ description, apply_url
+              └─ source, skills[]
+                          │
+                          ▼
+              ┌─────────────────────────┐
+              │    Job Search Results   │
+              │    (paginated list)     │
+              └────────────┬────────────┘
+                           │
+              ┌────────────┴────────────┐
+              │                         │
+              ▼                         ▼
+       View Details              Save Job
+              │                  POST /api/jobs/save
+              │                  → MongoDB jobs collection
+              │                  → User's saved jobs list
+              ▼
+       GET /api/jobs/recommendations
+       (profile skills → matched job list)
+
+┌──────────────────────────────────────────────────────────┐
+│                  Job Status Tracking                     │
+│                                                          │
+│  saved → applied → interviewing → offered → rejected    │
+│                                                          │
+│  Each job stored in MongoDB with full snapshot          │
+│  Accessible at /dashboard/jobs (Saved Jobs tab)         │
+└──────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📄 Module 2 — Resume Builder
+
+**Route:** `/dashboard/resume`
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         RESUME BUILDER FLOW                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  User fills Resume Form:
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  Personal Info: name, email, phone, location                       │
+  │  Experience: title, company, duration, description, achievements[] │
+  │  Education: degree, institution, year, GPA                         │
+  │  Skills: string[]                                                  │
+  │  Target Job: title, company, description (optional)               │
+  └───────────────────────────────┬─────────────────────────────────────┘
+                                  │
+                                  ▼
+              POST /api/ai/resume/generate
+                          │
+                          ▼
+              ┌─────────────────────────┐
+              │    Gemini 2.0 Flash     │
+              │   (AIzaSyDGcjpCp...)    │
+              │                         │
+              │  Prompt Engineering:    │
+              │  ├─ ATS optimization    │
+              │  ├─ Keyword injection   │
+              │  ├─ Format standards    │
+              │  └─ Bullet achievement  │
+              └───────────┬─────────────┘
+                          │
+                          ▼
+              ┌─────────────────────────────────────┐
+              │    ResumeGenerationResponse         │
+              │    ├─ resume.markdown               │
+              │    ├─ resume.html                   │
+              │    ├─ suggestions[]                 │
+              │    └─ atsScore (0-100)              │
+              └──────────────┬──────────────────────┘
+                             │
+          ┌──────────────────┼───────────────────┐
+          │                  │                   │
+          ▼                  ▼                   ▼
+   Preview            Save to DB          Download PDF
+   HTML render     POST /api/resumes    html2canvas + jsPDF
+                   → MongoDB resumes     client-side export
+                   → version tracking
+
+┌───────────────────────────────────────────────────────────────────┐
+│                    ADDITIONAL AI ACTIONS                          │
+│                                                                   │
+│  ┌─────────────────┐   ┌─────────────────┐  ┌──────────────────┐ │
+│  │ Improve Resume  │   │  Analyze Job    │  │  ATS Optimize    │ │
+│  │ POST /api/ai/   │   │  Match          │  │  POST /api/ai/   │ │
+│  │ resume/improve  │   │  POST /api/ai/  │  │  resume/         │ │
+│  │                 │   │  resume/        │  │  optimize-ats    │ │
+│  │ → suggestions[] │   │  analyze-match  │  │                  │ │
+│  └─────────────────┘   │                 │  │  → atsScore      │ │
+│                         │  → matchScore   │  │  → changes[]     │ │
+│  ┌─────────────────┐   │  → strengths[]  │  └──────────────────┘ │
+│  │  Cover Letter   │   │  → missing      │                       │
+│  │  Generator      │   │    Skills[]     │                       │
+│  │  POST /api/ai/  │   └─────────────────┘                       │
+│  │  cover-letter/  │                                             │
+│  │  generate       │                                             │
+│  └─────────────────┘                                             │
+└───────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📈 Module 3 — Market Dashboard
+
+**Route:** `/dashboard/market`
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        MARKET DASHBOARD FLOW                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │                    DATA SOURCES                                     │
+  │                                                                     │
+  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐    │
+  │  │     Finnhub      │  │  Alpha Vantage  │  │  Yahoo Finance  │    │
+  │  │   (Primary)      │  │  (Historical)   │  │  (via RapidAPI) │    │
+  │  │                  │  │                 │  │                 │    │
+  │  │  Real-time       │  │  5 calls/min    │  │  Company data   │    │
+  │  │  stock quotes    │  │  Technical      │  │  Trends         │    │
+  │  │  Company news    │  │  indicators     │  │                 │    │
+  │  │  Sentiment data  │  │  OHLCV data     │  │                 │    │
+  │  └─────────────────┘  └─────────────────┘  └─────────────────┘    │
+  └─────────────────────────────────────────────────────────────────────┘
+                                  │
+  ┌───────────────────────────────▼─────────────────────────────────────┐
+  │                     API ENDPOINTS                                   │
+  │                                                                     │
+  │  GET  /api/stocks/quote/:symbol     → Single stock quote            │
+  │  POST /api/stocks/quotes            → Batch quotes (array)          │
+  │  GET  /api/stocks/chart/:symbol     → OHLCV chart data              │
+  │       ?timeframe=1D|1W|1M|3M|1Y|5Y                                 │
+  │  GET  /api/stocks/search?q=query    → Stock search                  │
+  │  GET  /api/stocks/movers/gainers    → Top gaining stocks            │
+  │  GET  /api/stocks/movers/losers     → Top losing stocks             │
+  │  GET  /api/stocks/movers/most_active → Most traded stocks           │
+  │  GET  /api/stocks/news/:symbol      → Company-specific news         │
+  │  GET  /api/stocks/watchlist         → User's watchlist              │
+  │  POST /api/stocks/watchlist         → Add to watchlist              │
+  │  DEL  /api/stocks/watchlist?symbol= → Remove from watchlist         │
+  └─────────────────────────────────────────────────────────────────────┘
+                                  │
+  ┌───────────────────────────────▼─────────────────────────────────────┐
+  │                   MARKET DASHBOARD UI                               │
+  │                                                                     │
+  │  ┌────────────────────────────────────────────────────────────┐    │
+  │  │  Search Bar: "Search stocks by symbol or name..."          │    │
+  │  └────────────────────────────────────────────────────────────┘    │
+  │                                                                     │
+  │  ┌──────────────┬──────────────┬──────────────┐                   │
+  │  │   Gainers    │    Losers    │  Most Active │  ← Market Movers  │
+  │  └──────────────┴──────────────┴──────────────┘                   │
+  │                                                                     │
+  │  ┌─────────────────────────────────────────────────────────────┐   │
+  │  │   Stock Chart (recharts / chart.js)                         │   │
+  │  │   Timeframe: [1D] [1W] [1M] [3M] [1Y] [5Y]                │   │
+  │  │   OHLCV candlestick / line chart                            │   │
+  │  └─────────────────────────────────────────────────────────────┘   │
+  │                                                                     │
+  │  ┌──────────────────────┬──────────────────────┐                   │
+  │  │  My Watchlist        │  Stock Details       │                   │
+  │  │  (add/remove stocks) │  (P/E, 52W, Dividend)│                   │
+  │  └──────────────────────┴──────────────────────┘                   │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  Stock Quote Object:
+  ├─ symbol, name
+  ├─ price, change, changePercent
+  ├─ volume, marketCap, pe
+  ├─ high52Week, low52Week
+  └─ dividend, dividendYield
+```
+
+---
+
+## 📰 Module 4 — News Feed
+
+**Route:** `/dashboard/news`
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          NEWS FEED FLOW                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  User visits /dashboard/news
+          │
+          ▼
+  GET /api/news
+          │
+          ▼
+  ┌─────────────────────────┐
+  │  NewsAPI Integration    │
+  │  (key: 3f228b229db...)  │
+  │                         │
+  │  Endpoints used:        │
+  │  ├─ top-headlines       │
+  │  ├─ category filter:    │
+  │  │   technology         │
+  │  │   business           │
+  │  │   science            │
+  │  └─ pageSize: 10-30     │
+  └───────────┬─────────────┘
+              │
+              ▼
+  NewsArticle Object:
+  ├─ title
+  ├─ description
+  ├─ url (external link)
+  ├─ source.name
+  ├─ publishedAt
+  └─ urlToImage
+
+              │
+              ▼
+  ┌──────────────────────────────────────────────┐
+  │              NEWS FEED UI                   │
+  │                                             │
+  │  Category Tabs: [All] [Tech] [Finance] ...  │
+  │                                             │
+  │  ┌─────────────────────────────────────┐   │
+  │  │  Article Card                       │   │
+  │  │  ┌──────────────┐                  │   │
+  │  │  │  Thumbnail   │  Title           │   │
+  │  │  │  Image       │  Source + Time   │   │
+  │  │  └──────────────┘  Description     │   │
+  │  │                    [Read More →]   │   │
+  │  └─────────────────────────────────────┘   │
+  │                                             │
+  │  formatRelativeTime() helper:               │
+  │  "2 hours ago", "Yesterday", etc.           │
+  └──────────────────────────────────────────────┘
+
+  Also used on Dashboard home:
+  newsService.getTopHeadlines({ category: 'technology', pageSize: 10 })
+```
+
+---
+
+## 💰 Module 5 — Expense Tracker
+
+**Route:** `/dashboard/expenses`
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        EXPENSE TRACKER FLOW                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │                   TRANSACTION DATA MODEL                            │
+  │                                                                     │
+  │  MongoDB: transactions collection                                   │
+  │  ├─ user_id      (ObjectId ref: User)                               │
+  │  ├─ amount       (positive = income, negative = expense)            │
+  │  ├─ currency     (default: 'USD')                                   │
+  │  ├─ category     ('food', 'rent', 'salary', 'transport', etc.)     │
+  │  ├─ merchant     (optional string)                                  │
+  │  ├─ date         (timestamp)                                        │
+  │  └─ metadata     (flexible JSONB)                                   │
+  │                                                                     │
+  │  Supabase: transactions table (mirror with RLS)                    │
+  └─────────────────────────────────────────────────────────────────────┘
+                                  │
+  ┌───────────────────────────────▼─────────────────────────────────────┐
+  │  API Endpoints                                                      │
+  │                                                                     │
+  │  GET  /api/user/transactions  → All user transactions              │
+  │  POST /api/user/transactions  → Add new transaction                │
+  │  DEL  /api/user/transactions  → Delete transaction                 │
+  │  GET  /api/user/stats         → Summary counts (resumes, etc.)     │
+  └─────────────────────────────────────────────────────────────────────┘
+                                  │
+  ┌───────────────────────────────▼─────────────────────────────────────┐
+  │                    EXPENSE TRACKER UI                               │
+  │                                                                     │
+  │  ┌─────────────┬───────────────┬───────────────┐                  │
+  │  │   Total     │    Total      │    Net Flow   │  ← Summary Cards │
+  │  │   Income    │   Expenses    │  (Income-Exp) │                  │
+  │  │   (green)   │    (red)      │  (green/red)  │                  │
+  │  └─────────────┴───────────────┴───────────────┘                  │
+  │                                                                     │
+  │  ┌─────────────────────────────────────────────┐                  │
+  │  │  Add Transaction Form                       │                  │
+  │  │  Amount | Category | Merchant | Date        │                  │
+  │  │  [Income] or [Expense] toggle               │                  │
+  │  └─────────────────────────────────────────────┘                  │
+  │                                                                     │
+  │  ┌─────────────────────────────────────────────┐                  │
+  │  │  Transaction History (sorted by date)       │                  │
+  │  │  category badge | merchant | amount | date  │                  │
+  │  │  [Delete] button per row                    │                  │
+  │  └─────────────────────────────────────────────┘                  │
+  │                                                                     │
+  │  formatCurrency() helper: "$ 1,234.56"                            │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  Dashboard Financial Snapshot:
+  ├─ incomeTotal  = sum of all transactions where amount >= 0
+  ├─ expensesTotal = sum of abs(amount) where amount < 0
+  └─ netFlow      = incomeTotal - expensesTotal
+```
+
+---
+
+## 🤖 Module 6 — AI Assistant
+
+**Routes:** `/dashboard/ai-chat` + Global Floating Chatbot
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         AI ASSISTANT ARCHITECTURE                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  TWO ENTRY POINTS:
+  ┌─────────────────────────┐    ┌──────────────────────────────────────┐
+  │  Global Floating Bot     │    │  Full-Page AI Chat                   │
+  │  (every page)            │    │  /dashboard/ai-chat                  │
+  │                          │    │                                      │
+  │  components/Chatbot.tsx  │    │  Full conversation history           │
+  │  ├─ Minimized bubble     │    │  Stored in MongoDB                   │
+  │  ├─ Expanded chat panel  │    │  Conversation titles                 │
+  │  └─ Context-aware        │    │  Multi-session support               │
+  └──────────┬───────────────┘    └───────────────┬──────────────────────┘
+             │                                    │
+             └──────────────────┬─────────────────┘
+                                │
+                                ▼
+                   POST /api/ai/chat
+                          │
+                          ▼
+              ┌─────────────────────────┐
+              │    Gemini 2.0 Flash     │
+              │  (google/generative-ai) │
+              │                         │
+              │  System prompt:         │
+              │  Career & Finance AI    │
+              │  assistant context      │
+              └───────────┬─────────────┘
+                          │
+                          ▼
+              ChatResponse:
+              ├─ message (AI reply)
+              ├─ suggestions[] (quick replies)
+              └─ actions[] (type, label, data)
+                          │
+                          ▼
+              Conversation stored in MongoDB:
+              conversations collection
+              ├─ user_id
+              ├─ title
+              └─ messages[]:
+                  ├─ role: 'user' | 'assistant'
+                  ├─ content
+                  └─ timestamp
+
+  ChatMessage Object:
+  ├─ id (uuid)
+  ├─ role: 'user' | 'assistant'
+  ├─ content
+  ├─ timestamp
+  └─ metadata:
+      ├─ suggestions[]
+      └─ actions[]
+```
+
+---
+
+## 🗄️ Database Architecture
+
+### Dual Database Strategy
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         DATABASE LAYER                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │                     MONGODB ATLAS                                   │
+  │                   (Primary Data Store)                              │
+  │                   db name: mastermind                               │
+  │                                                                      │
+  │  ┌──────────────────────────────────────────────────────────┐       │
+  │  │  users (Mongoose Model)                                  │       │
+  │  │  ├─ email         String (unique, required)              │       │
+  │  │  ├─ password_hash String (bcryptjs hashed)              │       │
+  │  │  ├─ full_name     String                                 │       │
+  │  │  ├─ avatar_url    String                                 │       │
+  │  │  ├─ skills        Mixed[]                                │       │
+  │  │  ├─ preferences   Mixed (theme, notifications, etc.)    │       │
+  │  │  ├─ reset_token   String (password reset)               │       │
+  │  │  ├─ reset_token_expires Date                             │       │
+  │  │  └─ timestamps    createdAt, updatedAt                  │       │
+  │  └──────────────────────────────────────────────────────────┘       │
+  │                                                                      │
+  │  ┌──────────────────────────────────────────────────────────┐       │
+  │  │  resumes (Mongoose Model)                                │       │
+  │  │  ├─ user_id   ObjectId → User                           │       │
+  │  │  ├─ title     String (required)                          │       │
+  │  │  ├─ content   Mixed (flexible JSON)                      │       │
+  │  │  ├─ template  String                                     │       │
+  │  │  └─ is_public Boolean                                    │       │
+  │  └──────────────────────────────────────────────────────────┘       │
+  │                                                                      │
+  │  ┌──────────────────────────────────────────────────────────┐       │
+  │  │  jobs (Mongoose Model)                                   │       │
+  │  │  ├─ user_id      ObjectId → User                        │       │
+  │  │  ├─ job_id       String (unique)                         │       │
+  │  │  ├─ source       String (adzuna | jsearch)              │       │
+  │  │  ├─ job_snapshot Mixed (full job data)                  │       │
+  │  │  ├─ title, company, location, description               │       │
+  │  │  ├─ apply_url    String                                  │       │
+  │  │  ├─ status       saved|applied|interviewing|offered|    │       │
+  │  │  │               rejected                               │       │
+  │  │  └─ notes        String                                  │       │
+  │  └──────────────────────────────────────────────────────────┘       │
+  │                                                                      │
+  │  ┌──────────────────────────────────────────────────────────┐       │
+  │  │  watchlists (Mongoose Model)                             │       │
+  │  │  ├─ user_id      ObjectId → User                        │       │
+  │  │  ├─ symbol       String (e.g. 'AAPL')                   │       │
+  │  │  ├─ name         String                                  │       │
+  │  │  └─ price_at_add Number                                  │       │
+  │  └──────────────────────────────────────────────────────────┘       │
+  │                                                                      │
+  │  ┌──────────────────────────────────────────────────────────┐       │
+  │  │  transactions (Mongoose Model)                           │       │
+  │  │  ├─ user_id   ObjectId → User                           │       │
+  │  │  ├─ amount    Number (+income / -expense)                │       │
+  │  │  ├─ currency  String (default 'USD')                    │       │
+  │  │  ├─ category  String                                     │       │
+  │  │  ├─ merchant  String                                     │       │
+  │  │  ├─ date      Date                                       │       │
+  │  │  └─ metadata  Mixed                                      │       │
+  │  └──────────────────────────────────────────────────────────┘       │
+  │                                                                      │
+  │  ┌──────────────────────────────────────────────────────────┐       │
+  │  │  conversations (Mongoose Model)                          │       │
+  │  │  ├─ user_id  ObjectId → User                            │       │
+  │  │  ├─ title    String                                      │       │
+  │  │  └─ messages[]:                                          │       │
+  │  │      ├─ role      'user' | 'assistant'                  │       │
+  │  │      ├─ content   String                                 │       │
+  │  │      └─ timestamp Date                                   │       │
+  │  └──────────────────────────────────────────────────────────┘       │
+  └──────────────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │                    SUPABASE (PostgreSQL)                            │
+  │                  (Auth + Mirrored Tables + RLS)                     │
+  │                                                                      │
+  │  Schema: public                                                      │
+  │  Auth:   auth.users (managed by Supabase)                           │
+  │                                                                      │
+  │  Tables:                                                             │
+  │  ├─ profiles       (UUID PK → auth.users)                           │
+  │  ├─ resumes        (UUID, user_id FK → profiles)                    │
+  │  ├─ jobs_saved     (UUID, UNIQUE(user_id, job_id, source))          │
+  │  ├─ watchlists     (UUID, UNIQUE(user_id, symbol))                  │
+  │  ├─ transactions   (UUID, DECIMAL amount, category)                 │
+  │  └─ conversations  (UUID, JSONB messages[])                         │
+  │                                                                      │
+  │  Security:                                                           │
+  │  ├─ Row Level Security (RLS) ON all tables                          │
+  │  ├─ Each table: SELECT/INSERT/UPDATE/DELETE policies                │
+  │  │   → auth.uid() = user_id / id                                   │
+  │  ├─ Auto-create profile trigger on auth.users INSERT               │
+  │  └─ Auto-update updated_at trigger on profiles UPDATE              │
+  │                                                                      │
+  │  Custom Types:                                                       │
+  │  ├─ skill_level: beginner|intermediate|advanced|expert             │
+  │  ├─ remote_type: remote|hybrid|onsite                              │
+  │  ├─ theme_type:  light|dark|system                                 │
+  │  └─ message_role: user|assistant                                   │
+  │                                                                      │
+  │  Indexes:                                                            │
+  │  ├─ profiles(email)                                                  │
+  │  ├─ resumes(user_id), resumes(is_active)                           │
+  │  ├─ jobs_saved(user_id, saved_at)                                  │
+  │  ├─ watchlists(user_id)                                             │
+  │  ├─ transactions(user_id, created_at)                              │
+  │  └─ conversations(user_id)                                          │
+  └──────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🔌 API Reference
+
+### Authentication
+
+| Method | Endpoint | Description | Body |
+|--------|----------|-------------|------|
+| `POST` | `/api/auth/register` | Register new user | `{name, email, password}` |
+| `POST` | `/api/auth/login` | Login user | `{email, password}` |
+| `POST` | `/api/auth/logout` | Logout user | — |
+| `GET` | `/api/auth/me` | Get current user | — |
+| `POST` | `/api/auth/forgot-password` | Send reset email | `{email}` |
+| `POST` | `/api/auth/reset-password` | Reset password | `{token, newPassword}` |
+
+### Jobs
+
+| Method | Endpoint | Description | Body/Params |
+|--------|----------|-------------|-------------|
+| `POST` | `/api/jobs/search` | Search jobs | `JobSearchParams` |
+| `GET` | `/api/jobs/recommendations` | AI-matched jobs | — |
+| `GET` | `/api/jobs/saved/:userId` | Get saved jobs | — |
+| `POST` | `/api/jobs/save` | Save a job | `{userId, job, source}` |
+| `DELETE` | `/api/jobs/saved/:userId/:source/:jobId` | Remove saved job | — |
+| `GET` | `/api/jobs/details/:source/:jobId` | Job details | — |
+
+### Stocks
+
+| Method | Endpoint | Description | Body/Params |
+|--------|----------|-------------|-------------|
+| `GET` | `/api/stocks/quote/:symbol` | Single stock quote | — |
+| `POST` | `/api/stocks/quotes` | Batch stock quotes | `{symbols: string[]}` |
+| `GET` | `/api/stocks/chart/:symbol` | Chart data | `?timeframe=1D\|1W\|1M\|3M\|1Y\|5Y` |
+| `GET` | `/api/stocks/search` | Search stocks | `?q=query` |
+| `GET` | `/api/stocks/movers/:type` | Market movers | type: gainers\|losers\|most_active |
+| `GET` | `/api/stocks/news/:symbol` | Stock news | `?limit=10` |
+| `GET` | `/api/stocks/watchlist` | Get watchlist | — |
+| `POST` | `/api/stocks/watchlist` | Add to watchlist | `{userId, symbol}` |
+| `DELETE` | `/api/stocks/watchlist` | Remove from watchlist | `?symbol=AAPL` |
+
+### AI
+
+| Method | Endpoint | Description | Body |
+|--------|----------|-------------|------|
+| `POST` | `/api/ai/chat` | AI chat response | `ChatRequest` |
+| `POST` | `/api/ai/resume/generate` | Generate resume | `ResumeGenerationRequest` |
+| `POST` | `/api/ai/resume/improve` | Improve resume | `{resumeId, improvements[]}` |
+| `POST` | `/api/ai/resume/analyze-match` | Job match score | `{resumeId, jobDescription}` |
+| `POST` | `/api/ai/resume/optimize-ats` | ATS optimization | `{resumeId, jobDescription}` |
+| `POST` | `/api/ai/cover-letter/generate` | Generate cover letter | `{resumeId, jobDescription, companyName}` |
+
+### User
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/user/stats` | User counts (resumes, etc.) |
+| `GET` | `/api/user/transactions` | All transactions |
+| `POST` | `/api/user/transactions` | Add transaction |
+
+---
+
+## 🧩 Component Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       COMPONENT HIERARCHY                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  RootLayout (layout.tsx)
+  ├─ Google Fonts: Inter + Nunito + Patrick Hand
+  ├─ AuthProvider (context/AuthContext.tsx)
+  │   └─ Supabase session management
+  │   └─ MongoDB profile sync
+  ├─ {children} → Actual page content
+  ├─ <Chatbot />  ← Global floating AI chatbot
+  │   ├─ Minimized: floating button (bottom-right)
+  │   └─ Expanded: slide-up chat panel
+  │       ├─ Message history (ChatMessage[])
+  │       ├─ Input + Send button
+  │       └─ POST /api/ai/chat on submit
+  ├─ <Toaster /> ← Global toast notifications
+  └─ <WaterTouchEffects /> ← Interactive ripple effect
+
+  UI Primitive Components (components/ui/):
+  ├─ <Button>          — variant: default|ghost|outline|destructive
+  ├─ <Card>            — CardHeader, CardContent, CardDescription
+  ├─ <Input>           — Controlled form input
+  ├─ <Dialog>          — Modal dialog (Radix UI)
+  ├─ <DropdownMenu>    — Dropdown (Radix UI)
+  ├─ <Tabs>            — Tab navigation (Radix UI)
+  ├─ <Toast>           — Toast notification display
+  └─ <Tooltip>         — Hover tooltip (Radix UI)
+
+  Shared Utilities (shared/):
+  ├─ formatCurrency(amount)      → "$1,234.56"
+  ├─ formatRelativeTime(date)    → "2 hours ago"
+  └─ use-toast hook              → { toast } = useToast()
+```
+
+---
+
+## 🔑 Environment Variables
+
+Create a `.env.local` file in the root of `mastermind-app/`:
+
+```env
+# ─── MongoDB ───────────────────────────────────────────────────────────────
+MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/mastermind
+
+# ─── Supabase ──────────────────────────────────────────────────────────────
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# ─── AI (Google Gemini) ────────────────────────────────────────────────────
+GEMINI_API_KEY=your_gemini_api_key
+# Model: gemini-2.0-flash
+
+# ─── Stock Market APIs ─────────────────────────────────────────────────────
+NEXT_PUBLIC_FINNHUB_API_KEY=your_finnhub_key
+NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
+NEXT_PUBLIC_YAHOO_FINANCE_API_KEY=your_yahoo_finance_rapidapi_key
+
+# ─── Jobs APIs ─────────────────────────────────────────────────────────────
+NEXT_PUBLIC_ADZUNA_APP_ID=your_adzuna_app_id
+NEXT_PUBLIC_ADZUNA_API_KEY=your_adzuna_api_key
+NEXT_PUBLIC_JSEARCH_API_KEY=your_jsearch_rapidapi_key
+
+# ─── News API ──────────────────────────────────────────────────────────────
+NEWS_API_KEY=your_newsapi_key
+
+# ─── Auth ──────────────────────────────────────────────────────────────────
+JWT_SECRET=your_strong_jwt_secret_here
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+```
+
+Copy `.env.local.example` as your starting template.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+| Requirement | Version |
+|-------------|---------|
+| Node.js | 18.x or higher |
+| npm | 9.x or higher |
+| MongoDB Atlas account | Free tier works |
+| Supabase account | Free tier works |
+| API Keys (see above) | See [Environment Variables](#-environment-variables) |
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/mastermind.git
+cd mastermind/mastermind-app
+
+# 2. Install dependencies
+npm install
+
+# 3. Set up environment variables
+cp .env.local.example .env.local
+# Edit .env.local with your actual keys
+
+# 4. Set up Supabase database
+# Go to your Supabase project → SQL Editor
+# Paste and run the contents of: supabase-schema.sql
+
+# 5. Start development server
+npm run dev
+# Opens at http://localhost:3000
+```
+
+### Build for Production
+
+```bash
+npm run build
+npm start
+```
+
+### Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start dev server (auto-opens browser) |
+| `npm run dev:base` | Start Next.js dev server only |
+| `npm run build` | Build for production |
+| `npm start` | Start production server |
+| `npm run lint` | Run ESLint |
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| **Next.js** | 15.x | Full-stack React framework (App Router) |
+| **React** | 19.x | UI library |
+| **TypeScript** | 5.x | Type safety |
+| **TailwindCSS** | 4.x | Utility-first CSS |
+| **Framer Motion** | 12.x | Animations & transitions |
+| **Recharts** | 3.x | Stock charts & data visualization |
+| **Chart.js** | 4.x | Additional charting |
+| **Radix UI** | latest | Accessible UI primitives |
+| **Lucide React** | 0.544 | Icon library |
+| **Google Fonts** | — | Inter, Nunito, Patrick Hand |
+
+### Backend
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| **Next.js API Routes** | 15.x | Serverless backend |
+| **MongoDB** | Atlas | Primary data store |
+| **Mongoose** | 9.x | MongoDB ODM |
+| **Supabase** | latest | Auth + PostgreSQL mirror |
+| **bcryptjs** | 3.x | Password hashing |
+| **jsonwebtoken** | 9.x | JWT auth tokens |
+
+### AI & APIs
+
+| Service | Purpose |
+|---------|---------|
+| **Gemini 2.0 Flash** | AI chatbot + resume generation |
+| **Finnhub** | Real-time stock quotes & news |
+| **Alpha Vantage** | Historical stock data & indicators |
+| **Yahoo Finance (RapidAPI)** | Stock trends & company data |
+| **Adzuna** | Live job listings |
+| **JSearch (RapidAPI)** | Real-time job search |
+| **NewsAPI** | Technology & career news |
+| **Google Trends (pytrends)** | Search demand trends |
+
+### Dev Tools
+
+| Tool | Purpose |
+|------|---------|
+| **ESLint** | Code linting |
+| **PostCSS** | CSS processing |
+| **html2canvas** | Screenshot/PDF generation |
+| **jsPDF** | Client-side PDF export |
+| **date-fns** | Date utilities |
+| **zod** | Schema validation |
+| **react-hook-form** | Form management |
+
+---
+
+<div align="center">
+
+---
+
+**Mastermind** — Built with ❤️ to make career management smarter
+
+*AI-Powered · Real-Time · Full-Stack · Production-Ready*
+
+</div>
+]]>
