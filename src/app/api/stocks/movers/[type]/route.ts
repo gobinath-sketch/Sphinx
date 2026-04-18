@@ -139,34 +139,11 @@ export async function GET(
 
     let movers: StockMover[] = []
 
-    // Use Finnhub results if available, otherwise Yahoo, otherwise fallback to mock
+    // Use Finnhub results if available, otherwise Yahoo.
     if (finnhubResults.length > 0) {
       movers = finnhubResults
     } else if (yahooResults.length > 0) {
       movers = yahooResults
-    } else {
-      // Fallback to mock data
-      const mockMovers = [
-        { symbol: 'AAPL', name: 'Apple Inc.', price: 150.25, change: 5.25, changePercent: 3.62, volume: 45000000 },
-        { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 2800.50, change: -15.75, changePercent: -0.56, volume: 1200000 },
-        { symbol: 'MSFT', name: 'Microsoft Corporation', price: 350.80, change: 8.90, changePercent: 2.60, volume: 25000000 },
-        { symbol: 'AMZN', name: 'Amazon.com Inc.', price: 3200.00, change: -25.50, changePercent: -0.79, volume: 8000000 },
-        { symbol: 'TSLA', name: 'Tesla Inc.', price: 800.25, change: 45.75, changePercent: 6.07, volume: 35000000 },
-        { symbol: 'META', name: 'Meta Platforms Inc.', price: 350.90, change: -12.30, changePercent: -3.39, volume: 18000000 },
-        { symbol: 'NVDA', name: 'NVIDIA Corporation', price: 450.60, change: 22.40, changePercent: 5.24, volume: 28000000 },
-        { symbol: 'NFLX', name: 'Netflix Inc.', price: 420.15, change: -8.75, changePercent: -2.04, volume: 15000000 },
-        { symbol: 'AMD', name: 'Advanced Micro Devices Inc.', price: 120.45, change: 6.80, changePercent: 5.99, volume: 22000000 },
-        { symbol: 'INTC', name: 'Intel Corporation', price: 45.30, change: -2.15, changePercent: -4.53, volume: 30000000 }
-      ]
-
-      // Filter based on type
-      if (type === 'gainers') {
-        movers = mockMovers.filter(stock => stock.change > 0).sort((a, b) => b.changePercent - a.changePercent)
-      } else if (type === 'losers') {
-        movers = mockMovers.filter(stock => stock.change < 0).sort((a, b) => a.changePercent - b.changePercent)
-      } else if (type === 'most-active') {
-        movers = mockMovers.sort((a, b) => b.volume - a.volume)
-      }
     }
 
     return NextResponse.json(movers.slice(0, 10)) // Return top 10

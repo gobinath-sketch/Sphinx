@@ -59,6 +59,17 @@ const WatchlistSchema = new Schema({
 
 export const Watchlist = models.Watchlist || model('Watchlist', WatchlistSchema);
 
+const PortfolioSchema = new Schema({
+    user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    symbol: { type: String, required: true },
+    shares: { type: Number, required: true, min: 0 },
+    average_price: { type: Number, required: true, min: 0 },
+}, { timestamps: true });
+
+PortfolioSchema.index({ user_id: 1, symbol: 1 }, { unique: true });
+
+export const Portfolio = models.Portfolio || model('Portfolio', PortfolioSchema);
+
 const TransactionSchema = new Schema({
     user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     amount: { type: Number, required: true },

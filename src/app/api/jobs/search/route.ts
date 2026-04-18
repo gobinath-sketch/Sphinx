@@ -17,6 +17,15 @@ export async function POST(request: NextRequest) {
     const normalize = (s?: string) => (s || '').toLowerCase().trim()
     const normQuery = normalize(query)
     const normLocation = normalize(location)
+    const inferCountry = (loc: string): 'in' | 'us' => {
+      if (!loc) return 'us'
+      const indiaHints = ['india', 'bangalore', 'bengaluru', 'chennai', 'hyderabad', 'mumbai', 'delhi', 'pune', 'kolkata', 'gurgaon', 'noida']
+      const usHints = ['united states', 'usa', 'new york', 'california', 'texas', 'florida', 'seattle', 'san francisco', 'austin']
+      if (indiaHints.some((token) => loc.includes(token))) return 'in'
+      if (usHints.some((token) => loc.includes(token))) return 'us'
+      return loc.length > 0 ? 'in' : 'us'
+    }
+    const searchCountry = inferCountry(normLocation)
 
     const fetchWithTimeout = async (input: RequestInfo | URL, init: RequestInit = {}, timeoutMs = 4000) => {
       const controller = new AbortController()
@@ -38,6 +47,22 @@ export async function POST(request: NextRequest) {
       if (normLocation === 'india') tokens.push('in', 'bharat')
       if (normLocation === 'remote') tokens.push('anywhere', 'work from home')
       return tokens.some(t => l.includes(t))
+    }
+    const diversifyJobs = <T extends { title: string; company: string }>(jobs: T[], maxPerRoleCompany = 1): T[] => {
+      const counters = new Map<string, number>()
+      const kept: T[] = []
+      const overflow: T[] = []
+      for (const job of jobs) {
+        const key = `${normalize(job.title)}|${normalize(job.company)}`
+        const count = counters.get(key) ?? 0
+        if (count < maxPerRoleCompany) {
+          counters.set(key, count + 1)
+          kept.push(job)
+        } else {
+          overflow.push(job)
+        }
+      }
+      return [...kept, ...overflow]
     }
 
     // Try to fetch real jobs from multiple APIs
@@ -64,7 +89,7 @@ export async function POST(request: NextRequest) {
       const ADZUNA_API_KEY = process.env.ADZUNA_API_KEY || '409ce85eda71617b211a05a10f73445d'
       const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID || '9d4da7c6'
 
-      const country = normLocation === 'india' ? 'in' : 'us'
+      const country = searchCountry
       const adzunaUrl = `https://api.adzuna.com/v1/api/jobs/${country}/search/1?app_id=${ADZUNA_APP_ID}&app_key=${ADZUNA_API_KEY}&what=${encodeURIComponent(normQuery || 'developer')}&results_per_page=10${normLocation ? `&where=${encodeURIComponent(location)}` : ''}`
       console.log('Adzuna URL:', adzunaUrl)
 
@@ -112,7 +137,7 @@ export async function POST(request: NextRequest) {
     try {
       const JSEARCH_API_KEY = process.env.JSEARCH_API_KEY || 'ef7994ada9mshe853dff7586d068p1b8839jsneb6805952289'
 
-      const jsearchUrl = `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(normQuery || 'developer')}&page=1&num_pages=1${normLocation ? `&country=in` : ''}`
+      const jsearchUrl = `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(normQuery || 'developer')}&page=1&num_pages=1${normLocation ? `&country=${searchCountry}` : ''}`
       console.log('JSearch URL:', jsearchUrl)
 
       const jsearchResponse = await fetchWithTimeout(jsearchUrl, {
@@ -169,7 +194,7 @@ export async function POST(request: NextRequest) {
       if (SERPAPI_KEY) {
         console.log('Trying SerpAPI for Indeed jobs...')
 
-        const serpUrl = `https://serpapi.com/search.json?engine=google_jobs&q=${encodeURIComponent(normQuery || 'developer')}&api_key=${SERPAPI_KEY}&location=${encodeURIComponent(location || (normLocation ? 'India' : 'United States'))}`
+        const serpUrl = `https://serpapi.com/search.json?engine=google_jobs&q=${encodeURIComponent(normQuery || 'developer')}&api_key=${SERPAPI_KEY}&location=${encodeURIComponent(location || (searchCountry === 'in' ? 'India' : 'United States'))}`
         console.log('SerpAPI URL:', serpUrl)
 
         const serpResponse = await fetchWithTimeout(serpUrl)
@@ -220,7 +245,7 @@ export async function POST(request: NextRequest) {
       if (SERPAPI_KEY) {
         console.log('Trying SerpAPI for LinkedIn jobs...')
 
-        const linkedinUrl = `https://serpapi.com/search.json?engine=google_jobs&q=${encodeURIComponent(normQuery || 'developer')} site:linkedin.com&api_key=${SERPAPI_KEY}&location=${encodeURIComponent(location || (normLocation ? 'India' : 'United States'))}`
+        const linkedinUrl = `https://serpapi.com/search.json?engine=google_jobs&q=${encodeURIComponent(normQuery || 'developer')} site:linkedin.com&api_key=${SERPAPI_KEY}&location=${encodeURIComponent(location || (searchCountry === 'in' ? 'India' : 'United States'))}`
         console.log('LinkedIn SerpAPI URL:', linkedinUrl)
 
         const linkedinResponse = await fetchWithTimeout(linkedinUrl)
@@ -278,83 +303,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Use only real jobs from APIs
-    let filteredJobs = [...realJobs]
+    const dedupedJobs = realJobs.filter((job, index, arr) => {
+      const key = `${normalize(job.title)}|${normalize(job.company)}|${normalize(job.location)}`
+      return arr.findIndex((candidate) => `${normalize(candidate.title)}|${normalize(candidate.company)}|${normalize(candidate.location)}` === key) === index
+    })
+    let filteredJobs = [...dedupedJobs]
 
-    // FALLBACK: If no jobs found from external APIs (or they failed), use high-quality fallback data
-    if (filteredJobs.length === 0 && !query && !location) {
-      console.log('No external jobs found, using fallback data for demonstration')
-      const fallbackJobs = [
-        {
-          title: "Senior Frontend Engineer",
-          company: "TechCorp Inc.",
-          location: "Remote",
-          remote_type: "remote",
-          salary_range: { min: 120000, max: 160000, currency: "USD" },
-          description: "We are looking for an experienced Frontend Engineer to lead our core product team. You will work with React, Next.js, and TypeScript.",
-          requirements: ["React", "TypeScript", "Next.js", "5+ years experience"],
-          benefits: ["Health Insurance", "Unlimited PTO", "Stock Options"],
-          apply_url: "#",
-          posted_date: new Date().toISOString(),
-          source: "fallback"
-        },
-        {
-          title: "Product Designer",
-          company: "Creative Studio",
-          location: "New York, NY",
-          remote_type: "hybrid",
-          salary_range: { min: 90000, max: 130000, currency: "USD" },
-          description: "Join our design team to create beautiful and intuitive user experiences. Focusing on mobile-first design.",
-          requirements: ["Figma", "UI/UX", "Prototyping"],
-          benefits: ["Creative environment", "Flexible hours"],
-          apply_url: "#",
-          posted_date: new Date(Date.now() - 86400000).toISOString(),
-          source: "fallback"
-        },
-        {
-          title: "Backend Developer",
-          company: "DataSystems",
-          location: "San Francisco, CA",
-          remote_type: "onsite",
-          salary_range: { min: 130000, max: 170000, currency: "USD" },
-          description: "Scale our high-performance APIs. Experience with Node.js and PostgreSQL required.",
-          requirements: ["Node.js", "PostgreSQL", "Redis", "AWS"],
-          benefits: ["Competitive Salary", "Gym membership"],
-          apply_url: "#",
-          posted_date: new Date(Date.now() - 172800000).toISOString(),
-          source: "fallback"
-        },
-        {
-          title: "Marketing Manager",
-          company: "Growth Hacking Co.",
-          location: "Remote",
-          remote_type: "remote",
-          salary_range: { min: 80000, max: 110000, currency: "USD" },
-          description: "Lead our growth marketing initiatives. social media, SEO, and content strategy.",
-          requirements: ["SEO", "Content Marketing", "Social Media"],
-          benefits: ["Remote work", "Performance bonuses"],
-          apply_url: "#",
-          posted_date: new Date(Date.now() - 259200000).toISOString(),
-          source: "fallback"
-        },
-        {
-          title: "Junior DevOps Engineer",
-          company: "CloudNative",
-          location: "Austin, TX",
-          remote_type: "hybrid",
-          salary_range: { min: 70000, max: 95000, currency: "USD" },
-          description: "Help us manage our cloud infrastructure. Great learning opportunity.",
-          requirements: ["Linux", "Docker", "Bash"],
-          benefits: ["Mentorship", "Certification support"],
-          apply_url: "#",
-          posted_date: new Date(Date.now() - 345600000).toISOString(),
-          source: "fallback"
-        }
-      ]
-      // @ts-ignore
-      filteredJobs = fallbackJobs
-      // @ts-ignore
-      realJobs.push(...fallbackJobs)
-    }
+    // No mock jobs fallback: real provider results only.
 
     if (normQuery) {
       const searchTerms = normQuery.split(' ')
@@ -394,10 +349,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Fallback if filters removed all but we do have real jobs
-    if (filteredJobs.length === 0 && realJobs.length > 0) {
+    if (filteredJobs.length === 0 && dedupedJobs.length > 0) {
       console.log('Filters resulted in 0; falling back to best-available jobs without strict location filter')
-      filteredJobs = realJobs
+      filteredJobs = dedupedJobs
     }
+    filteredJobs = diversifyJobs(filteredJobs, 1)
 
     // Simulate pagination
     const page = 1
@@ -409,19 +365,20 @@ export async function POST(request: NextRequest) {
     // Log the final results
     console.log(`Total real jobs found: ${filteredJobs.length}`)
     console.log(`Jobs returned: ${paginatedJobs.length}`)
-    console.log(`Real jobs array:`, realJobs.map(job => ({ title: job.title, company: job.company, source: job.source })))
+    console.log(`Real jobs array:`, dedupedJobs.map(job => ({ title: job.title, company: job.company, source: job.source })))
 
     return NextResponse.json({
       jobs: paginatedJobs,
       total: filteredJobs.length,
       page,
       hasMore: endIndex < filteredJobs.length,
-      sources_used: realJobs.length > 0 ? [...new Set(realJobs.map(job => job.source))] : [],
+      sources_used: dedupedJobs.length > 0 ? [...new Set(dedupedJobs.map(job => job.source))] : [],
       debug_info: {
-        total_real_jobs: realJobs.length,
+        total_real_jobs: dedupedJobs.length,
         filtered_jobs: filteredJobs.length,
         returned_jobs: paginatedJobs.length,
-        search_params: { query, location, remote, salary_min, salary_max }
+        search_params: { query, location, remote, salary_min, salary_max },
+        country_inferred: searchCountry
       }
     })
 

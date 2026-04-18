@@ -15,16 +15,31 @@ interface TrendResponse {
 
 async function getGoogleTrendsData(keywords: string[]): Promise<TrendResponse> {
   try {
-    // Since we can't use pytrends directly in Next.js API routes,
-    // we'll use a web scraping approach or a proxy service
-    // For now, we'll simulate trend data based on the keywords
-    
-    const trends: TrendData[] = keywords.map(keyword => ({
-      keyword,
-      interest: Math.floor(Math.random() * 100) + 1,
-      timestamp: new Date().toISOString(),
-      region: 'US'
-    }))
+    const SERPAPI_KEY = process.env.SERPAPI_KEY
+    if (!SERPAPI_KEY) {
+      throw new Error('SERPAPI_KEY is not configured for real trends data')
+    }
+
+    const trends: TrendData[] = []
+    for (const keyword of keywords) {
+      const resp = await fetch(
+        `https://serpapi.com/search.json?engine=google_trends&q=${encodeURIComponent(
+          keyword
+        )}&api_key=${SERPAPI_KEY}`
+      )
+      if (!resp.ok) continue
+      const data = await resp.json()
+      const timeline: Array<{ values?: Array<{ value?: number }> }> =
+        data?.interest_over_time?.timeline_data ?? []
+      const latest = timeline[timeline.length - 1]
+      const interest = Number(latest?.values?.[0]?.value ?? 0)
+      trends.push({
+        keyword,
+        interest: Number.isFinite(interest) ? interest : 0,
+        timestamp: new Date().toISOString(),
+        region: 'US',
+      })
+    }
 
     // Generate related and rising queries based on keywords
     const relatedQueries = keywords.flatMap(keyword => [

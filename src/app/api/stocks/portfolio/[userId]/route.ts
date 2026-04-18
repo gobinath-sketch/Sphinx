@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/auth'
+import dbConnect from '@/lib/db'
+import { Portfolio } from '@/lib/models'
 
 export async function GET(
   request: NextRequest,
@@ -20,29 +22,27 @@ export async function GET(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // Mock portfolio data
-    const mockPortfolio = [
-      {
-        symbol: 'AAPL',
-        shares: 10,
-        averagePrice: 150.00,
-        currentPrice: 155.25,
-        totalValue: 1552.50,
-        gainLoss: 52.50,
-        gainLossPercent: 3.50
-      },
-      {
-        symbol: 'GOOGL',
-        shares: 5,
-        averagePrice: 2800.00,
-        currentPrice: 2850.75,
-        totalValue: 14253.75,
-        gainLoss: 253.75,
-        gainLossPercent: 1.81
+    await dbConnect()
+    const rows = await Portfolio.find({ user_id: userId }).sort({ updatedAt: -1 })
+    const payload = rows.map((row) => {
+      const shares = Number(row.shares ?? 0)
+      const averagePrice = Number(row.average_price ?? 0)
+      const currentPrice = averagePrice
+      const totalValue = shares * currentPrice
+      const gainLoss = (currentPrice - averagePrice) * shares
+      const gainLossPercent = averagePrice > 0 ? (gainLoss / (averagePrice * shares)) * 100 : 0
+      return {
+        symbol: row.symbol,
+        shares,
+        averagePrice,
+        currentPrice,
+        totalValue,
+        gainLoss,
+        gainLossPercent,
       }
-    ]
+    })
 
-    return NextResponse.json(mockPortfolio)
+    return NextResponse.json(payload)
 
   } catch (error) {
     console.error('Error fetching portfolio:', error)

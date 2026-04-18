@@ -108,40 +108,6 @@ export async function GET(request: NextRequest) {
       index === self.findIndex(t => t.symbol === item.symbol)
     )
 
-    // If no results from APIs, fall back to mock data
-    if (uniqueResults.length === 0) {
-      const mockStocks = [
-        { symbol: 'AAPL', name: 'Apple Inc.', exchange: 'NASDAQ' },
-        { symbol: 'GOOGL', name: 'Alphabet Inc.', exchange: 'NASDAQ' },
-        { symbol: 'MSFT', name: 'Microsoft Corporation', exchange: 'NASDAQ' },
-        { symbol: 'AMZN', name: 'Amazon.com Inc.', exchange: 'NASDAQ' },
-        { symbol: 'TSLA', name: 'Tesla Inc.', exchange: 'NASDAQ' },
-        { symbol: 'META', name: 'Meta Platforms Inc.', exchange: 'NASDAQ' },
-        { symbol: 'NVDA', name: 'NVIDIA Corporation', exchange: 'NASDAQ' },
-        { symbol: 'NFLX', name: 'Netflix Inc.', exchange: 'NASDAQ' },
-        { symbol: 'AMD', name: 'Advanced Micro Devices Inc.', exchange: 'NASDAQ' },
-        { symbol: 'INTC', name: 'Intel Corporation', exchange: 'NASDAQ' },
-        { symbol: 'IBM', name: 'International Business Machines Corporation', exchange: 'NYSE' },
-        { symbol: 'ORCL', name: 'Oracle Corporation', exchange: 'NYSE' },
-        { symbol: 'CRM', name: 'Salesforce Inc.', exchange: 'NYSE' },
-        { symbol: 'ADBE', name: 'Adobe Inc.', exchange: 'NASDAQ' },
-        { symbol: 'PYPL', name: 'PayPal Holdings Inc.', exchange: 'NASDAQ' },
-        { symbol: 'UBER', name: 'Uber Technologies Inc.', exchange: 'NYSE' },
-        { symbol: 'SPOT', name: 'Spotify Technology S.A.', exchange: 'NYSE' },
-        { symbol: 'SQ', name: 'Block Inc.', exchange: 'NYSE' },
-        { symbol: 'ZM', name: 'Zoom Video Communications Inc.', exchange: 'NASDAQ' },
-        { symbol: 'SHOP', name: 'Shopify Inc.', exchange: 'NYSE' }
-      ]
-
-      // Filter mock stocks based on query
-      const filteredStocks = mockStocks.filter(stock => 
-        stock.symbol.toLowerCase().includes(query.toLowerCase()) ||
-        stock.name.toLowerCase().includes(query.toLowerCase())
-      )
-
-      return NextResponse.json(filteredStocks)
-    }
-
     return NextResponse.json(uniqueResults.slice(0, 20))
 
   } catch (error) {

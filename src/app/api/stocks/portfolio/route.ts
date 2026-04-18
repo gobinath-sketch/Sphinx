@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/db'
 import { verifyToken } from '@/lib/auth'
+import { Portfolio } from '@/lib/models'
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,29 +15,26 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get user's portfolio (mock data for now)
-    const mockPortfolio = [
-      {
-        symbol: 'AAPL',
-        shares: 10,
-        averagePrice: 150.00,
-        currentPrice: 155.25,
-        totalValue: 1552.50,
-        gainLoss: 52.50,
-        gainLossPercent: 3.50
-      },
-      {
-        symbol: 'GOOGL',
-        shares: 5,
-        averagePrice: 2800.00,
-        currentPrice: 2850.75,
-        totalValue: 14253.75,
-        gainLoss: 253.75,
-        gainLossPercent: 1.81
+    const portfolioRows = await Portfolio.find({ user_id: userPayload.userId }).sort({ updatedAt: -1 })
+    const payload = portfolioRows.map((row) => {
+      const shares = Number(row.shares ?? 0)
+      const averagePrice = Number(row.average_price ?? 0)
+      const currentPrice = averagePrice
+      const totalValue = shares * currentPrice
+      const gainLoss = (currentPrice - averagePrice) * shares
+      const gainLossPercent = averagePrice > 0 ? (gainLoss / (averagePrice * shares)) * 100 : 0
+      return {
+        symbol: row.symbol,
+        shares,
+        averagePrice,
+        currentPrice,
+        totalValue,
+        gainLoss,
+        gainLossPercent,
       }
-    ]
+    })
 
-    return NextResponse.json(mockPortfolio)
+    return NextResponse.json(payload)
 
   } catch (error) {
     console.error('Error fetching portfolio:', error)
@@ -66,11 +64,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Symbol, shares, and price are required' }, { status: 400 })
     }
 
-    // Mock portfolio addition
-    return NextResponse.json({
-      message: 'Stock added to portfolio',
-      data: { symbol, shares, price }
+    const symbolUpper = String(symbol).toUpperCase()
+    const sharesNum = Number(shares)
+    const priceNum = Number(price)
+    if (!Number.isFinite(sharesNum) || sharesNum <= 0 || !Number.isFinite(priceNum) || priceNum <= 0) {
+      return NextResponse.json({ error: 'Shares and price must be positive numbers' }, { status: 400 })
+    }
+
+    const existing = await Portfolio.findOne({ user_id: userPayload.userId, symbol: symbolUpper })
+    if (existing) {
+      const oldShares = Number(existing.shares ?? 0)
+      const oldAvg = Number(existing.average_price ?? 0)
+      const totalShares = oldShares + sharesNum
+      const weightedAvg = totalShares > 0 ? ((oldShares * oldAvg) + (sharesNum * priceNum)) / totalShares : priceNum
+      existing.shares = totalShares
+      existing.average_price = weightedAvg
+      await existing.save()
+      return NextResponse.json({ message: 'Portfolio position updated', data: existing })
+    }
+
+    const created = await Portfolio.create({
+      user_id: userPayload.userId,
+      symbol: symbolUpper,
+      shares: sharesNum,
+      average_price: priceNum,
     })
+
+    return NextResponse.json({ message: 'Stock added to portfolio', data: created })
 
   } catch (error) {
     console.error('Error adding to portfolio:', error)
