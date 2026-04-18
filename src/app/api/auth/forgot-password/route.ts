@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { randomBytes } from 'crypto';
 import dbConnect from '@/lib/db';
 import { User } from '@/lib/models';
+import { sendPasswordResetEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
     try {
@@ -21,12 +22,14 @@ export async function POST(request: NextRequest) {
         user.reset_token_expires = expires;
         await user.save();
 
-        // Mock sending email
-        console.log(`[MOCK EMAIL SERVICE] Password reset link for ${email}: https://${request.nextUrl.host}/reset-password?token=${token}`);
+        const siteUrl =
+            process.env.NEXT_PUBLIC_SITE_URL ||
+            process.env.NEXTAUTH_URL ||
+            `${request.nextUrl.protocol}//${request.nextUrl.host}`;
+        const resetLink = `${siteUrl}/reset-password?token=${token}`;
+        await sendPasswordResetEmail(email, resetLink);
 
-        return NextResponse.json({ message: 'If an account exists, a reset link has been sent.', token });
-        // Sending token in response for development ease/demo since we don't have real email. 
-        // In PROD, this should NOT be returned, but I'll leave a comment or just enable it for the user to see.
+        return NextResponse.json({ message: 'If an account exists, a reset link has been sent.' });
 
     } catch (error) {
         console.error('Forgot password error:', error);

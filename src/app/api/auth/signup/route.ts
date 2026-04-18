@@ -4,6 +4,7 @@ import dbConnect from '@/lib/db';
 import { User } from '@/lib/models';
 import { signToken } from '@/lib/auth';
 import { serialize } from 'cookie';
+import { sendSignupCodeEmail } from '@/lib/email';
 
 export async function POST(req: Request) {
     try {
@@ -32,6 +33,13 @@ export async function POST(req: Request) {
             password_hash,
             full_name,
         });
+
+        const signupCode = String(Math.floor(100000 + Math.random() * 900000));
+        try {
+            await sendSignupCodeEmail(newUser.email, signupCode);
+        } catch (mailError) {
+            console.error('Signup email send failed:', mailError);
+        }
 
         const token = signToken({ userId: newUser._id.toString(), email: newUser.email });
 
