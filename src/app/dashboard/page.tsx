@@ -426,7 +426,7 @@ export default function DashboardPage() {
                             <CardDescription>{recommendationsMessage || 'Curated job opportunities for you'}</CardDescription>
                         </CardHeader>
                         <CardContent className="flex-1 flex flex-col min-h-0">
-                            <div className="space-y-3 overflow-y-auto pr-2 h-[320px] custom-scrollbar">
+                            <div className="space-y-3 overflow-y-auto pr-2 h-[260px] sm:h-[320px] custom-scrollbar">
                                 {recommendedJobs.length > 0 ? recommendedJobs.map((job, i) => (
                                     <div key={i} className="p-3 rounded-lg border border-border/60 bg-white/5 hover:border-primary/40 transition-colors">
                                         <div className="flex justify-between items-start">
@@ -464,7 +464,7 @@ export default function DashboardPage() {
                             <CardDescription>Latest tech news</CardDescription>
                         </CardHeader>
                         <CardContent className="flex-1 flex flex-col min-h-0">
-                            <div className="space-y-3 overflow-y-auto pr-2 h-[320px] custom-scrollbar">
+                            <div className="space-y-3 overflow-y-auto pr-2 h-[260px] sm:h-[320px] custom-scrollbar">
                                 {newsHeadlines.length > 0 ? newsHeadlines.map((article, i) => (
                                     <a key={i} href={article.url} target="_blank" rel="noopener noreferrer"
                                         className="block p-3 rounded-lg border border-border/60 bg-white/5 hover:bg-white/10 transition-colors">
@@ -493,7 +493,7 @@ export default function DashboardPage() {
                             <CardDescription>{summary.watchlist === 0 ? "Popular Stocks (Watchlist Empty)" : "Your watchlist updates"}</CardDescription>
                         </CardHeader>
                         <CardContent className="flex-1 flex flex-col min-h-0">
-                            <div className="space-y-3 overflow-y-auto pr-2 h-[320px] custom-scrollbar">
+                            <div className="space-y-3 overflow-y-auto pr-2 h-[260px] sm:h-[320px] custom-scrollbar">
                                 {watchlistQuotes.length > 0 ? watchlistQuotes.map((stock) => (
                                     <div key={stock.symbol} className="flex justify-between items-center p-3 rounded-lg border border-border/60 bg-white/5 hover:bg-white/10 transition-colors cursor-default">
                                         <div>

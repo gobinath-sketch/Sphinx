@@ -568,14 +568,14 @@ export default function ResumePage() {
       {/* Header */}
       <header className="shrink-0 border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
         <div className="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+          <div className="flex h-auto flex-col items-start justify-between gap-3 py-3 sm:h-16 sm:flex-row sm:items-center sm:gap-0 sm:py-0">
+            <div className="flex items-center min-w-0">
               <BackToDashboardButton className="mr-4" />
-              <h1 className="text-2xl font-bold text-white">Resume Builder</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-white truncate">Resume Builder</h1>
             </div>
             <Button
               onClick={() => setShowBuilder(true)}
-              className="bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white"
+              className="w-full sm:w-auto bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white"
             >
               <Plus className="h-4 w-4 mr-2" />
               New Resume

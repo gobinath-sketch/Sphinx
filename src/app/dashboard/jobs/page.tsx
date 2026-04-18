@@ -308,17 +308,17 @@ export default function JobsPage() {
       {/* Header */}
       <header className="bg-gray-900/50 border-b border-gray-800 backdrop-blur-sm">
         <div className="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+          <div className="flex h-auto flex-col items-start justify-between gap-3 py-3 sm:h-16 sm:flex-row sm:items-center sm:gap-0 sm:py-0">
+            <div className="flex items-center min-w-0">
               <BackToDashboardButton className="mr-4" />
-              <h1 className="text-2xl font-bold text-white">Job Search</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-white truncate">Job Search</h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex w-full sm:w-auto items-center">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowJobAlerts(!showJobAlerts)}
-                className="text-gray-300 border-gray-600 hover:border-sky-400"
+                className="w-full sm:w-auto text-gray-300 border-gray-600 hover:border-sky-400"
               >
                 <Bell className="h-4 w-4 mr-2" />
                 Job Alerts ({jobAlerts.length})
@@ -362,12 +362,12 @@ export default function JobsPage() {
                   className="h-9 pl-9 text-sm bg-black/50 border-white/10 focus:border-primary focus:ring-2 focus:ring-primary/30"
                 />
               </div>
-              <div className="flex space-x-2">
+              <div className="flex w-full md:w-auto gap-2">
                 <Button
                   onClick={() => setShowFilters(!showFilters)}
                   variant="outline"
                   size="sm"
-                  className="h-9 px-3 text-xs text-gray-300 border-gray-600 hover:border-sky-400"
+                  className="h-9 flex-1 md:flex-none px-3 text-xs text-gray-300 border-gray-600 hover:border-sky-400"
                 >
                   <Filter className="h-4 w-4 mr-1.5" />
                   Filters
@@ -376,7 +376,7 @@ export default function JobsPage() {
                   size="sm"
                   onClick={handleSearch}
                   disabled={isSearching}
-                  className="h-9 px-4 text-sm bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white whitespace-nowrap"
+                  className="h-9 flex-1 md:flex-none px-4 text-sm bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white whitespace-nowrap"
                 >
                   {isSearching ? '...' : 'Search Jobs'}
                 </Button>
@@ -651,11 +651,11 @@ export default function JobsPage() {
         {/* Results */}
         {jobs.length > 0 && (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center sm:justify-between">
               <h2 className="text-xl font-semibold text-white">
                 {totalJobs} Jobs Found
               </h2>
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                 <span className="text-sm text-gray-400">
                   Showing {jobs.length} of {totalJobs}
                 </span>

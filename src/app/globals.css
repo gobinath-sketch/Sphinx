@@ -226,3 +226,101 @@ button {
   font-size: 11px;
   margin: 4px 0;
 }
+
+/* Responsive safety layer (non-destructive).
+   Keeps current desktop design while preventing overflow/clipping on smaller screens. */
+@media (max-width: 1279px) {
+  .ats-page {
+    width: 100%;
+    min-height: auto;
+    padding: 36px 30px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .ats-page {
+    padding: 28px 22px;
+  }
+
+  .ats-name {
+    font-size: 20px;
+  }
+
+  .ats-section {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 767px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .ats-page {
+    width: 100%;
+    min-height: auto;
+    padding: 20px 14px;
+  }
+
+  .ats-name {
+    font-size: 18px;
+    letter-spacing: 0.5px;
+  }
+
+  .ats-contact,
+  .ats-paragraph,
+  .ats-list li {
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .ats-section {
+    margin-top: 12px;
+    font-size: 10.5px;
+    letter-spacing: 0.6px;
+  }
+
+  .ats-subsection {
+    font-size: 11px;
+  }
+
+  /* Prevent header/title crowding on small devices. */
+  h1 {
+    font-size: 1.35rem;
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: 1.15rem;
+    line-height: 1.25;
+  }
+
+  /* Keep chart canvas area readable on phones. */
+  .h-\[430px\] {
+    height: 320px !important;
+  }
+
+  /* Keep long dashboard/feed panels readable without taking full screen. */
+  .h-\[600px\] {
+    height: 420px !important;
+  }
+
+  .h-\[320px\] {
+    height: 260px !important;
+  }
+}
+
+@media (max-width: 479px) {
+  .ats-page {
+    padding: 16px 10px;
+  }
+
+  .ats-name {
+    font-size: 16px;
+  }
+
+  .h-\[430px\] {
+    height: 280px !important;
+  }
+}

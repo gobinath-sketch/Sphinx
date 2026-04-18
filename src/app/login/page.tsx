@@ -2,14 +2,13 @@
 
 import { useCallback, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { useToast } from '@/shared/hooks/use-toast'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
+import MatrixBackground from '@/components/MatrixBackground'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -75,26 +74,9 @@ export default function LoginPage() {
     <div
       className="auth-theme-override relative min-h-[100dvh] px-4 overflow-hidden"
     >
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: 'url(/login-bg.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          transform: 'rotate(-90deg)',
-          transformOrigin: 'center',
-          width: '100vh',
-          height: '100vw',
-          left: '50%',
-          top: '50%',
-          translate: '-50% -50%',
-        }}
-      />
-      {/* Subtle overlay — image is already dark */}
-      <div className="absolute inset-0 bg-black/25 z-1" />
+      <MatrixBackground />
 
-      <div className="relative z-10 ml-auto mr-4 sm:mr-12 md:mr-20 flex min-h-[100dvh] w-full max-w-sm flex-col justify-center gap-5 py-6">
+      <div className="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-sm flex-col justify-center gap-5 py-6">
         {/* Header */}
         <div className="text-center space-y-1.5">
 

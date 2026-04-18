@@ -122,10 +122,10 @@ export default function NewsPage() {
       {/* Header */}
       <header className="bg-gray-900/50 border-b border-gray-800 backdrop-blur-sm">
         <div className="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+          <div className="flex h-auto flex-col items-start justify-between gap-3 py-3 sm:h-16 sm:flex-row sm:items-center sm:gap-0 sm:py-0">
+            <div className="flex items-center min-w-0">
               <BackToDashboardButton className="mr-4" />
-              <h1 className="text-2xl font-bold text-white">News Feed</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-white truncate">News Feed</h1>
             </div>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default function NewsPage() {
               </div>
             </div>
 
-            <div className="flex space-x-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                 <Input
@@ -184,7 +184,7 @@ export default function NewsPage() {
                 size="sm"
                 onClick={handleSearch}
                 disabled={loadingNews}
-                className="h-9 px-4 text-sm bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white"
+                className="h-9 w-full sm:w-auto px-4 text-sm bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white"
               >
                 {loadingNews ? '...' : 'Search'}
               </Button>

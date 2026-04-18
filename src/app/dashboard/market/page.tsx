@@ -235,10 +235,10 @@ export default function StocksPage() {
       {/* Header */}
       <header className="bg-gray-900/50 border-b border-gray-800 backdrop-blur-sm">
         <div className="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+          <div className="flex h-auto flex-col items-start justify-between gap-3 py-3 sm:h-16 sm:flex-row sm:items-center sm:gap-0 sm:py-0">
+            <div className="flex items-center min-w-0">
               <BackToDashboardButton className="mr-4" />
-              <h1 className="text-2xl font-bold text-white">Stock Dashboard</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-white truncate">Stock Dashboard</h1>
             </div>
           </div>
         </div>
@@ -257,7 +257,7 @@ export default function StocksPage() {
                 </CardDescription>
               </div>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                 <Input
@@ -287,7 +287,7 @@ export default function StocksPage() {
               <CardTitle className="text-white">Search Results</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {searchResults.map((stock) => (
                   <div key={stock.symbol} className="flex flex-col p-4 bg-gray-800/50 rounded-lg hover:border-sky-400/50 border border-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-900/20">
                     <div className="flex items-center justify-between mb-2">
@@ -334,7 +334,7 @@ export default function StocksPage() {
                 <p className="text-xs text-gray-400">Loading watchlist...</p>
               </div>
             ) : watchlist.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {watchlist.map((item) => {
                   const priceValue = typeof item.price === 'number' ? item.price : 0
                   const changeValue = typeof item.change === 'number' ? item.change : 0
